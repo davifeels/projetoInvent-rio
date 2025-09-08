@@ -1,0 +1,175 @@
+/* ======================================================== */
+/* Estilo Refatorado para Cadastro de Inventário            */
+/* ======================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --cor-fundo: #f8fafc;
+  --cor-painel: #ffffff;
+  --cor-borda: #e2e8f0;
+  --cor-texto-principal: #0f172a;
+  --cor-texto-secundario: #64748b;
+  --cor-primaria: #4f46e5;
+  --cor-primaria-hover: #4338ca;
+  --cor-sucesso-fundo: #f0fdf4;
+  --cor-sucesso-texto: #166534;
+  --cor-erro-fundo: #fef2f2;
+  --cor-erro-texto: #b91c1c;
+  --fonte-principal: 'Inter', system-ui, sans-serif;
+  --sombra-discreta: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.page-container {
+  font-family: var(--fonte-principal);
+  background-color: var(--cor-fundo);
+  width: 100%;
+  min-height: 100vh;
+  padding: 2.5rem;
+  box-sizing: border-box;
+}
+
+.page-header h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--cor-texto-principal);
+  margin-bottom: 2.5rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.inventario-form {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: var(--cor-painel);
+  padding: 3rem;
+  border-radius: 12px;
+  border: 1px solid var(--cor-borda);
+  box-shadow: var(--sombra-discreta);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.75rem 2.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.inventario-form label {
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--cor-texto-secundario);
+  margin-bottom: 0.5rem;
+}
+
+.inventario-form input[type="text"],
+.inventario-form input[type="email"],
+.inventario-form textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: var(--fonte-principal);
+  color: var(--cor-texto-principal);
+  background-color: #f8fafc;
+  transition: all 0.2s ease-in-out;
+}
+
+.inventario-form input:focus,
+.inventario-form textarea:focus {
+  outline: none;
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  background-color: var(--cor-painel);
+}
+
+.inventario-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--cor-borda);
+}
+
+.form-actions button {
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.btn-submit {
+  background-color: var(--cor-primaria);
+  color: white;
+  box-shadow: var(--sombra-discreta);
+}
+
+.btn-submit:hover {
+  background-color: var(--cor-primaria-hover);
+}
+
+.btn-cancelar {
+  background-color: transparent;
+  color: var(--cor-texto-secundario);
+  border-color: transparent;
+}
+
+.btn-cancelar:hover {
+  background-color: #f1f5f9;
+}
+
+.feedback-message {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 2rem auto;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.feedback-message.error {
+  background-color: var(--cor-erro-fundo);
+  color: var(--cor-erro-texto);
+}
+
+.feedback-message.success {
+  background-color: var(--cor-sucesso-fundo);
+  color: var(--cor-sucesso-texto);
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    padding: 1.5rem 1rem;
+  }
+  .inventario-form {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+  }
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+  .form-actions button {
+    width: 100%;
+  }
+}

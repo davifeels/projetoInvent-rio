@@ -1,0 +1,445 @@
+/* ========================================= */
+/* Estilo de tela cheia para o Inventário Pessoal  */
+/* ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --cor-primaria: #1f6feb;
+  --cor-secundaria: #34495e;
+  --cor-fundo-claro: #f8f9fa;
+  --cor-fundo-escuro: #e9ecef;
+  --cor-texto-principal: #212529;
+  --cor-texto-secundario: #6c757d;
+  --cor-borda: #dee2e6;
+  --cor-sucesso: #28a745;
+  --cor-perigo: #dc3545;
+  --raio-borda-lg: 12px;
+  --raio-borda-md: 8px;
+  --sombra-card: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --transicao-padrao: all 0.2s ease-in-out;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--cor-fundo-claro);
+  color: var(--cor-texto-principal);
+  line-height: 1.6;
+}
+
+/* ========================================= */
+/* Layout Principal e Container              */
+/* ========================================= */
+.page-container-inventario {
+  width: 100%;
+  min-height: 100vh;
+  padding: 3rem 4vw;
+  box-sizing: border-box;
+}
+
+.inventario-content-wrapper {
+  max-width: 100%; /* Ocupa a largura total */
+  margin: 0 auto;
+  background-color: var(--cor-painel);
+  border-radius: 0; /* Remove o border-radius */
+  box-shadow: none; /* Remove a sombra */
+  padding: 3rem;
+}
+
+/* ========================================= */
+/* Cabeçalho da Página                       */
+/* ========================================= */
+.inventario-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.inventario-header h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--cor-secundaria);
+  margin-bottom: 0.5rem;
+}
+
+.inventario-header p {
+  font-size: 1.15rem;
+  color: var(--cor-texto-secundario);
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+/* ========================================= */
+/* Seções do Formulário (Fieldset e Legend)  */
+/* ========================================= */
+.inventario-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+}
+
+fieldset {
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-borda-md);
+  padding: 2.5rem;
+  margin: 0;
+  background-color: var(--cor-fundo-claro);
+  transition: box-shadow 0.3s ease;
+}
+
+fieldset:hover {
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+}
+
+legend {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--cor-secundaria);
+  padding: 0 1rem;
+  width: auto;
+  margin-left: -1rem;
+  margin-bottom: 2rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem 1.5rem;
+}
+
+/* ========================================= */
+/* Campos de Formulário (Inputs, etc.)       */
+/* ========================================= */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: var(--cor-texto-principal);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.9rem 1.1rem;
+  font-size: 1rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-borda-md);
+  background-color: #fff;
+  transition: var(--transicao-padrao);
+  box-sizing: border-box;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 0 4px rgba(31, 111, 235, 0.15);
+}
+
+/* ========================================= */
+/* Campo Bloqueado e Condicional             */
+/* ========================================= */
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon .locked-input {
+  background-color: var(--cor-fundo-escuro);
+  cursor: not-allowed;
+  color: var(--cor-texto-secundario);
+  padding-right: 3rem;
+}
+
+.input-icon {
+  position: absolute;
+  right: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--cor-texto-secundario);
+}
+
+.conditional-field {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border-radius: var(--raio-borda-md);
+  background-color: rgba(31, 111, 235, 0.05);
+  border: 1px solid rgba(31, 111, 235, 0.2);
+  grid-column: 1 / -1;
+}
+
+.conditional-field label {
+  color: var(--cor-primaria);
+  font-weight: 600;
+}
+
+/* ========================================= */
+/* Seção de Checkboxes                       */
+/* ========================================= */
+.checkbox-section {
+  grid-column: 1 / -1;
+}
+
+.checkbox-section > label {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: var(--raio-borda-md);
+  background-color: #fff;
+  border: 1px solid var(--cor-borda);
+  transition: var(--transicao-padrao);
+  cursor: pointer;
+}
+
+.checkbox-item:hover {
+  border-color: var(--cor-primaria);
+  background-color: var(--cor-fundo-claro);
+}
+
+.checkbox-item input[type="checkbox"] {
+  width: 1.2em;
+  height: 1.2em;
+  margin-right: 0.8rem;
+  accent-color: var(--cor-primaria);
+  cursor: pointer;
+}
+
+.checkbox-item label {
+  font-weight: 400;
+  color: var(--cor-texto-principal);
+  cursor: pointer;
+}
+
+/* ========================================= */
+/* Ícone de Informação e Tooltip             */
+/* ========================================= */
+.info-icon {
+  cursor: help;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: bold;
+  font-style: italic;
+  background-color: var(--cor-fundo-escuro);
+  color: var(--cor-texto-secundario);
+  transition: var(--transicao-padrao);
+}
+
+.info-icon:hover {
+  background-color: var(--cor-primaria);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+/* ========================================= */
+/* Botões de Ação                            */
+/* ========================================= */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--cor-borda);
+}
+
+button {
+  padding: 0.9rem 2.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border-radius: var(--raio-borda-md);
+  cursor: pointer;
+  border: none;
+  transition: var(--transicao-padrao);
+}
+
+.btn-salvar {
+  background-color: var(--cor-sucesso);
+  color: white;
+}
+
+.btn-salvar:hover:not(:disabled) {
+  background-color: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
+}
+
+.btn-salvar:disabled {
+  background-color: #90ee90;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* ========================================= */
+/* TELA DE VISUALIZAÇÃO (READ-ONLY)          */
+/* ========================================= */
+.display-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 3rem 4vw;
+  box-sizing: border-box;
+}
+
+.display-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.display-header h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--cor-secundaria);
+  margin-bottom: 0.5rem;
+}
+
+.display-header p {
+  font-size: 1.15rem;
+  color: var(--cor-texto-secundario);
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.display-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  background-color: var(--cor-painel);
+  border-radius: var(--raio-borda-lg);
+  box-shadow: var(--sombra-card);
+  padding: 3rem;
+  border: 1px solid var(--cor-borda);
+}
+
+.display-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.display-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--cor-secundaria);
+  margin-bottom: 0.25rem;
+}
+
+.display-value {
+  background-color: var(--cor-fundo-claro);
+  padding: 1rem;
+  border-radius: var(--raio-borda-md);
+  border: 1px solid var(--cor-borda);
+  font-size: 1rem;
+  color: var(--cor-texto-principal);
+}
+
+.display-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.btn-alterar {
+  background-color: #ffc107;
+  color: #333;
+  padding: 1rem 2rem;
+  border-radius: var(--raio-borda-md);
+  border: none;
+  font-weight: 600;
+  transition: var(--transicao-padrao);
+}
+
+.btn-alterar:hover {
+  background-color: #e0a800;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(255, 193, 7, 0.4);
+}
+
+.btn-excluir {
+  background-color: var(--cor-perigo);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: var(--raio-borda-md);
+  border: none;
+  font-weight: 600;
+  transition: var(--transicao-padrao);
+}
+
+.btn-excluir:hover {
+  background-color: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(220, 53, 69, 0.4);
+}
+
+
+/* ========================================= */
+/* Responsividade                            */
+/* ========================================= */
+@media (max-width: 992px) {
+  .inventario-content-wrapper {
+    padding: 2rem;
+  }
+  .inventario-header h2 {
+    font-size: 2rem;
+  }
+  legend {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-container-inventario {
+    padding: 2rem 1rem;
+  }
+  .inventario-content-wrapper {
+    padding: 1.5rem;
+  }
+  .form-grid, .checkbox-grid, .display-grid {
+    grid-template-columns: 1fr;
+  }
+  legend {
+    font-size: 1.2rem;
+  }
+  .form-actions, .display-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

@@ -1,0 +1,27 @@
+services:
+  backend:
+    container_name: backend_colaboradores
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=db_colaboradores
+    restart: always
+    depends_on:
+      - db
+  db:
+    image: mysql:8.0
+    container_name: db_colaboradores
+    restart: always
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=davi080401
+      - MYSQL_DATABASE=cadastro_colaboradores
+      - MYSQL_PASSWORD=davi080401

@@ -1,0 +1,389 @@
+/* Dashboard.css */
+
+:root {
+  --primary-bg: #f4f7f9;
+  --header-bg: #ffffff;
+  --header-text: #34495e;
+  --header-border-color: #e0e0e0;
+  
+  --greeting-text-color: #2c3e50;
+  --logout-text-color: #ffffff;
+  --logout-bg: #e74c3c;
+  --logout-bg-hover: #c0392b;
+
+  --card-bg: #ffffff;
+  --card-border-radius: 12px;
+  --card-shadow: rgba(0, 0, 0, 0.06);
+  --card-shadow-hover: rgba(0, 0, 0, 0.12);
+  --card-icon-color: #3498db; /* Cor padrão azul */
+  --card-title-color: #2c3e50;
+
+  --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --text-color-general: #333333;
+  --text-color-muted: #7f8c8d;
+
+  --loading-text-color: #555;
+
+  --master-card-icon-color: #20c997; /* Verde para Master */
+
+  --card-gap: 2rem; /* Aumenta o espaçamento entre cards para cards maiores */
+  --dashboard-padding-x: 3.5rem; /* Aumenta o padding lateral geral do dashboard para mais respiro */
+}
+
+body {
+  font-family: var(--font-family-sans);
+  margin: 0;
+  background-color: var(--primary-bg);
+  color: var(--text-color-general);
+}
+
+.dashboard-wrapper {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding: 0; 
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background-color: var(--header-bg);
+  padding: 1.5rem var(--dashboard-padding-x); /* Usa padding lateral do dashboard */
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--header-border-color);
+  flex-wrap: wrap; 
+  position: sticky; 
+  top: 0;
+  z-index: 100; 
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+}
+
+.header-left-spacer {
+  flex: 1; 
+  min-width: 50px; 
+}
+
+.header-title {
+  font-size: 2rem; /* Aumenta o tamanho do título do header */
+  font-weight: 700;
+  color: var(--header-text);
+  margin: 0;
+  text-align: center;
+  flex: 2; 
+  min-width: 200px; 
+}
+
+.header-user-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem; /* Aumenta o espaçamento */
+  flex: 1;
+  justify-content: flex-end;
+  min-width: 180px; 
+}
+
+.user-greeting {
+  margin: 0;
+  color: var(--greeting-text-color);
+  font-size: 1.1rem; /* Aumenta a fonte da saudação */
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.logout-button {
+  padding: 0.7rem 1.4rem; /* Aumenta o padding do botão */
+  background-color: var(--logout-bg);
+  color: var(--logout-text-color);
+  border: none;
+  border-radius: 8px; /* Mais arredondado */
+  font-weight: 600;
+  font-size: 0.95rem; /* Aumenta a fonte do botão */
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+}
+
+.logout-button:hover {
+  background-color: var(--logout-bg-hover);
+  transform: translateY(-2px); 
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+.logout-button:active {
+  transform: translateY(-1px);
+}
+
+.card-grid-scroll-container {
+  width: 100%;
+  overflow-x: hidden; /* Garante que não haja rolagem horizontal */
+  box-sizing: border-box;
+  flex-grow: 1; 
+  display: flex;
+  justify-content: center; /* Centraliza a grade */
+  align-items: flex-start;
+  padding-top: 2.5rem; /* Aumenta padding-top */
+  padding-bottom: 3.5rem; /* Aumenta padding-bottom */
+  padding-left: var(--dashboard-padding-x); /* Padding lateral do Dashboard */
+  padding-right: var(--dashboard-padding-x); /* Padding lateral do Dashboard */
+}
+
+.card-grid {
+  display: grid;
+  /* CHAVE: Aumenta o minmax para cards maiores. Tenta 2-3 colunas. */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+  gap: var(--card-gap); /* Espaçamento entre os cards */
+  width: 100%; 
+  max-width: 1400px; /* Limita a largura máxima da grade */
+  padding: 0;
+  margin: 0; 
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 16px; /* Bordas mais arredondadas para cards maiores */
+  padding: 2.5rem 1.5rem; /* Aumenta o padding interno do card */
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 5px 20px var(--card-shadow); /* Sombra mais pronunciada */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  min-height: 200px; /* Aumenta a altura mínima do card */
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.02); /* Efeito de "levantar" mais pronunciado */
+  box-shadow: 0 15px 40px var(--card-shadow-hover); /* Sombra maior no hover */
+  z-index: 1; /* Garante que o card em hover fique acima */
+}
+
+.card-icon {
+  font-size: 3.5rem; /* Aumenta o tamanho do ícone */
+  margin-bottom: 1.5rem; /* Mais espaço abaixo do ícone */
+  color: var(--card-icon-color);
+}
+
+.card[data-path="/admin/inventarios"] .card-icon {
+    color: var(--master-card-icon-color); 
+}
+
+.card .card-title-text { 
+  font-size: 1.3rem; /* Aumenta o tamanho do título do card */
+  font-weight: 700; /* Mais negrito */
+  color: var(--card-title-color);
+  margin: 0;
+}
+
+.no-functionality-message,
+.loading-container { 
+  text-align: center;
+  font-size: 1.2rem; /* Fonte maior */
+  color: var(--text-color-muted);
+  width: 100%; 
+  height: 100%; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 250px; /* Aumenta a altura mínima */
+  background-color: var(--header-bg); 
+  border-radius: var(--card-border-radius); 
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Sombra mais visível */
+  max-width: 900px; /* Aumenta largura máxima */
+  margin: 3rem auto; /* Mais margem */
+  padding: 3rem; /* Mais padding */
+}
+
+.no-cards-message {
+    grid-column: 1 / -1; 
+    text-align: center;
+    padding: 30px;
+    background-color: #fff3cd; 
+    color: #856404; 
+    border: 1px solid #ffeeba;
+    border-radius: 8px;
+    margin-top: 2rem;
+    font-size: 1.1rem;
+    width: auto; 
+    max-width: 800px;
+}
+
+.welcome-message {
+    text-align: center;
+    padding: 1.5rem; /* Aumenta padding */
+    background-color: #ffe0b2; 
+    color: #e65100; 
+    border: 1px solid #ffcc80;
+    border-radius: 10px; /* Mais arredondado */
+    margin: 2rem auto; /* Mais margem */
+    max-width: 900px; /* Aumenta largura máxima */
+    font-size: 1.1rem; /* Fonte maior */
+    line-height: 1.6; /* Mais espaçamento de linha */
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08); /* Sombra mais visível */
+}
+
+
+/* --- Responsividade --- */
+@media (max-width: 1400px) { /* Para monitores um pouco menores */
+    .card-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Tenta 3-4 colunas */
+    }
+}
+
+@media (max-width: 1200px) { /* Laptops e telas grandes */
+    .header {
+        padding: 1.5rem 2.5rem;
+    }
+    .card-grid-scroll-container {
+        padding: 2rem 2.5rem; /* Ajusta padding para telas menores */
+    }
+    .card-grid {
+        gap: 1.5rem; /* Espaçamento menor */
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Mais compacto */
+    }
+    .card {
+      min-height: 180px; /* Ajusta altura */
+      padding: 2rem 1.2rem;
+    }
+    .card-icon {
+        font-size: 3rem;
+        margin-bottom: 1.2rem;
+    }
+    .card .card-title-text {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 992px) { /* Tablets grandes */
+    .header-title {
+        font-size: 1.8rem;
+    }
+    .header-user-info {
+        gap: 1rem;
+    }
+    .user-greeting {
+        font-size: 1rem;
+    }
+    .logout-button {
+        font-size: 0.9rem;
+    }
+    .card-grid-scroll-container {
+        padding: 1.5rem 2rem;
+    }
+    .card-grid {
+        gap: 1.2rem;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Força 2-3 colunas */
+    }
+    .card {
+        min-height: 160px;
+        padding: 1.8rem 1rem;
+    }
+    .card-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    .card .card-title-text {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 768px) { /* Tablets e celulares */
+    .header {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+    }
+    .header-title {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+    .header-user-info {
+        flex-direction: column;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+    .user-greeting {
+        font-size: 0.9rem;
+    }
+    .logout-button {
+        font-size: 0.8rem;
+        padding: 0.6rem 1rem;
+        width: auto; 
+    }
+
+    .card-grid-scroll-container {
+        padding: 1rem 1.5rem; /* Padding reduzido para mobile */
+    }
+    .card-grid {
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Ajusta para 2-3 cards */
+    }
+    .card {
+        min-height: 140px; /* Altura menor */
+        padding: 1.5rem 0.8rem;
+    }
+    .card-icon {
+        font-size: 2.2rem;
+        margin-bottom: 0.7rem;
+    }
+    .card .card-title-text {
+        font-size: 1rem;
+    }
+    .no-cards-message, .welcome-message {
+        font-size: 0.95rem;
+        padding: 1rem;
+        max-width: 90%;
+    }
+    .loading-container {
+        font-size: 1rem;
+        padding: 1.5rem;
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 480px) { /* Celulares muito pequenos */
+    .header {
+        padding: 0.8rem;
+    }
+    .header-title {
+        font-size: 1.3rem;
+    }
+    .user-greeting {
+        font-size: 0.8rem;
+    }
+    .logout-button {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.8rem;
+    }
+    .card-grid-scroll-container {
+        padding: 0.8rem 1rem; /* Padding mínimo em telas muito pequenas */
+    }
+    .card-grid {
+        gap: 0.8rem;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Ajusta para 2 cards ou 1 por linha */
+    }
+    .card {
+        padding: 1rem 0.5rem;
+        min-height: 100px;
+    }
+    .card-icon {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+    .card .card-title-text {
+        font-size: 0.85rem;
+    }
+}

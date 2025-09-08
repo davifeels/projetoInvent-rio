@@ -1,0 +1,297 @@
+/* ======================================================== */
+/* CSS Específico para a Página de Gerenciamento de Funções */
+/* ======================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Paleta de Cores Principal */
+  --cor-primaria: #1f6feb;
+  --cor-primaria-hover: #1759c4;
+  --cor-secundaria: #1D6F42;
+  --cor-secundaria-hover: #165934;
+  --cor-perigo: #e53e3e;
+  --cor-perigo-hover: #c53030;
+
+  /* Cores de UI */
+  --cor-fundo-pagina: #f7faff;
+  --cor-painel: #ffffff;
+  --cor-borda: #e2e8f0;
+  --cor-sombra-discreta: rgba(149, 157, 165, 0.1);
+  --cor-sombra-hover: rgba(149, 157, 165, 0.2);
+
+  /* Cores de Texto */
+  --cor-texto-titulo: #1a202c;
+  --cor-texto-corpo: #4a5568;
+  --cor-texto-label: #718096;
+
+  /* Métricas e Transições */
+  --raio-borda: 16px;
+  --transicao-suave: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* 1. Base e Estrutura Principal */
+* { box-sizing: border-box; }
+body { font-family: 'Poppins', sans-serif; background-color: var(--cor-fundo-pagina); }
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 3rem 2rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.page-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--cor-texto-titulo);
+  margin: 0;
+}
+
+.btn-logout {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--cor-perigo);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transicao-suave);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-logout:hover {
+  background-color: var(--cor-perigo-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.message {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  font-weight: 500;
+  text-align: center;
+}
+.message.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+.message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.content-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 400px) 1fr;
+  gap: 3rem;
+  align-items: flex-start;
+  flex-grow: 1;
+}
+
+.form-panel, .list-panel {
+  background: var(--cor-painel);
+  border-radius: var(--raio-borda);
+  border: 1px solid var(--cor-borda);
+  box-shadow: 0 4px 12px var(--cor-sombra-discreta);
+  display: flex;
+  flex-direction: column;
+  height: auto;
+}
+
+.form-panel {
+  flex: 0 0 450px;
+}
+.list-panel {
+  flex-grow: 1;
+  padding: 2rem;
+}
+
+.panel-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--cor-texto-titulo);
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--cor-borda);
+  padding-bottom: 1rem;
+}
+
+/* Formulário de Criação */
+.form-panel form {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--cor-texto-label);
+  margin-bottom: 0.5rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--cor-borda);
+  font-size: 1rem;
+  transition: var(--transicao-suave);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 0 4px rgba(31, 111, 235, 0.2);
+}
+
+.form-buttons {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Botões menores e mais proporcionais */
+.form-buttons .btn-primary, .form-buttons .btn-export {
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 10px;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  width: 100%;
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: var(--cor-primaria);
+}
+
+.btn-primary:hover {
+  background-color: var(--cor-primaria-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.btn-export {
+  background-color: var(--cor-secundaria);
+}
+
+.btn-export:hover {
+  background-color: var(--cor-secundaria-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.btn-export:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.item-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid var(--cor-borda);
+  box-shadow: 0 2px 4px var(--cor-sombra-discreta);
+  transition: var(--transicao-suave);
+}
+
+.item:hover {
+  border-color: var(--cor-primaria);
+  background-color: var(--cor-painel);
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 8px 25px var(--cor-sombra-hover);
+  z-index: 10;
+}
+
+.item-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.item-title {
+  font-weight: 600;
+  color: var(--cor-texto-corpo);
+  font-size: 1.05rem;
+}
+
+.item-subtitle {
+  font-size: 0.9rem;
+  color: var(--cor-texto-label);
+  margin-top: 4px;
+}
+
+.btn-delete {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  color: var(--cor-perigo);
+  background-color: #fee2e2;
+  transition: var(--transicao-suave);
+  opacity: 0.8;
+}
+
+.item:hover .btn-delete {
+  opacity: 1;
+}
+
+.btn-delete:hover {
+  background-color: var(--cor-perigo);
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.loading-message, .empty-message {
+  text-align: center;
+  padding: 4rem;
+  color: var(--cor-texto-label);
+  font-size: 1.1rem;
+}
+
+@media (max-width: 992px) {
+  .content-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    padding: 1rem;
+  }
+}

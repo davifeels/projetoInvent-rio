@@ -1,0 +1,75 @@
+.login-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f3f4f6; /* cinza claro */
+  font-family: sans-serif;
+}
+
+.login-form {
+  background-color: #fff;
+  padding: 50px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.login-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.login-form label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+  color: #444;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border 0.2s ease;
+}
+
+.login-form input:focus {
+  border-color: #2563eb;
+  outline: none;
+}
+
+.login-form button {
+  width: 40%;
+  background-color: #2563eb;
+  color: white;
+  padding: 10px;
+  font-size: 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  
+  /* Centraliza o botão */
+  display: block; /* Garante que o botão é um bloco */
+  margin: 0 auto; /* Centraliza horizontalmente */
+}
+
+
+.login-form button:hover {
+  background-color: #1e40af;
+}
+
+.login-form .error {
+  background-color: #fdecea;
+  color: #b91c1c;
+  padding: 8px;
+  border-radius: 5px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}

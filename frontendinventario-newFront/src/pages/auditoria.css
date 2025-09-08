@@ -1,0 +1,179 @@
+/* ======================================================== */
+/* CSS Formal e Detalhado para a Página de Auditoria        */
+/* ======================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* 1. Reset e Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background-color: #f4f7fb;
+  font-family: 'Inter', "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* 2. Container Principal */
+.auditoria-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 4rem 5rem;
+  background-color: #ffffff;
+}
+
+/* 3. Cabeçalho da Página */
+.auditoria-header {
+  margin-bottom: 2.5rem;
+}
+
+.auditoria-header h2 {
+  font-size: 2.5rem;
+  color: #174db2;
+  margin: 0;
+}
+
+/* 4. Painel de Exportação */
+.export-panel {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.export-panel h3 {
+  font-size: 1.5rem;
+  color: #111827;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+/* Refatorado para usar flexbox e garantir alinhamento */
+.export-form {
+  display: flex;
+  align-items: center; /* ALINHA TODOS OS ITENS VERTICALMENTE */
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.export-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.export-form label {
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.export-form input[type="date"] {
+  padding: 0.8rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-export {
+  background-color: #1D6F42;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.8rem; /* Diminui o padding horizontal e vertical */
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s ease;
+  width: auto;
+}
+
+.btn-export:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+.btn-export:hover:not(:disabled) {
+  background-color: #165934;
+}
+
+.export-error {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+/* 5. Tabela de Auditoria */
+.table-responsive-auditoria {
+  background: #ffffff;
+  border-radius: 10px;
+  overflow-x: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+.table-responsive-auditoria table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+
+.table-responsive-auditoria thead {
+  background-color: #f9fafb;
+}
+
+.table-responsive-auditoria th,
+.table-responsive-auditoria td {
+  padding: 1rem 1.5rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: top;
+}
+
+.table-responsive-auditoria th {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: #6b7280;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.table-responsive-auditoria tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+/* 6. Formatação da Coluna 'Detalhes' */
+.detalhes-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+.detalhe-item {
+  line-height: 1.5;
+}
+.detalhe-chave {
+  font-weight: 600;
+  color: #334155;
+  margin-right: 0.5rem;
+}
+.detalhe-valor {
+  color: #64748b;
+  word-break: break-all;
+}
+.detalhe-valor.texto-erro {
+  color: #b91c1c;
+  font-weight: 500;
+}
+
+/* 7. Mensagens de Status e Erro */
+.status-message {
+  padding: 1.2rem;
+  border-radius: 6px;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.status-message.error {
+  background-color: #fef2f2;
+  color: #dc2626;
+}

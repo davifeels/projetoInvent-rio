@@ -1,0 +1,61 @@
+/* ======================================================== */
+/* Estilos Globais da Aplicação                             */
+/* ======================================================== */
+
+/* 1. Importação de Fontes (Opcional, mas recomendado) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* 2. Reset e Base para todo o projeto */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #f4f7fb; /* Cor de fundo padrão para todo o site */
+  color: #1a202c; /* Cor de texto padrão */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 3. Estilos de componentes comuns (Botões, Inputs) que você queira padronizar */
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+input, select, textarea, button {
+  font-size: 1rem;
+}
+
+/* 4. Estilos para mensagens de feedback (sucesso/erro) */
+.message {
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  border: 1px solid transparent;
+}
+
+.message.success {
+  background-color: #f0fdf4;
+  color: #166534;
+  border-color: #bbf7d0;
+}
+
+.message.error {
+  background-color: #fef2f2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}

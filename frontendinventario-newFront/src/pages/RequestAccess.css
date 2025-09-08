@@ -1,0 +1,125 @@
+/* Estilos globais para a página */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f0f2f5; /* Fundo cinza suave */
+}
+
+/* Container principal da página */
+.request-access-container {
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center; /* Centraliza verticalmente */
+  min-height: 100vh; /* Ocupa a altura total da tela */
+  padding: 2rem;
+  box-sizing: border-box; /* Garante que padding não adicione largura extra */
+}
+
+/* Estilos do formulário (o painel branco) */
+.request-access-container form {
+  background-color: #ffffff;
+  padding: 3rem; /* Aumenta o espaçamento interno */
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra mais suave e visível */
+  width: 100%;
+  max-width: 500px; /* Define uma largura máxima elegante para o formulário */
+}
+
+/* Estilo do título */
+.request-access-container h2 {
+  font-size: 2rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+/* Estilo para cada grupo de campo (label + input) */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: #555;
+  font-weight: 500;
+}
+
+/* Estilo para todos os inputs e selects */
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  color: #333;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #6c63ff; /* Cor roxa no foco */
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.25);
+  outline: none;
+  background-color: #fff;
+}
+
+/* Estilo do botão de submit */
+.btn-submit {
+  background-color: #6c63ff; /* Roxo principal */
+  color: white;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.btn-submit:hover {
+  background-color: #5851d8;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.link-login {
+  display: block;
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  color: #6c63ff;
+  text-decoration: none;
+}
+
+.link-login:hover {
+  text-decoration: underline;
+}
+
+/* Mensagens de feedback */
+.form-global-error, .form-global-success {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.form-global-error {
+  background-color: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.form-global-success {
+  background-color: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
