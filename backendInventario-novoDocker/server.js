@@ -1,12 +1,16 @@
-// backend/server.js
-
+// =================================================================
+//                      CONFIGURAÇÃO E DEPENDÊNCIAS
+// =================================================================
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const app = express();
 const dbPool = require('./config/db');
 
-// --- Teste de conexão com o MySQL ---
+// =================================================================
+//                      CONEXÃO COM O BANCO DE DADOS
+// =================================================================
 dbPool.getConnection()
   .then(connection => {
     console.log('✅ Conexão com o MySQL estabelecida com sucesso!');
@@ -17,44 +21,35 @@ dbPool.getConnection()
     process.exit(1);
   });
 
-// --- CORS ---
-// AJUSTE PRINCIPAL AQUI: A origem agora é lida da variável de ambiente
-// Isso permite que o Docker informe ao backend qual endereço do frontend é permitido.
+// =================================================================
+//                            MIDDLEWARES
+// =================================================================
+
+// --- Configuração de Segurança (CORS e Helmet) ---
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || 'http://10.0.11.88:3000', // Valor padrão para desenvolvimento local
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3001',
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization'],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
 };
-
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // suporte para preflight
+app.use(helmet());
 
-// --- Middlewares globais ---
+// --- Middlewares para processamento do corpo da requisição ---
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// -------------------------------
-//          ROTAS PÚBLICAS
-// -------------------------------
+// =================================================================
+//                                 ROTAS
+// =================================================================
+
+// --- Middleware de Autenticação (será usado por rota) ---
+const autenticarToken = require('./middlewares/authMiddleware');
+
+// --- Definição das Rotas ---
 const authRoutes = require('./routes/auth');
 const funcoesRoutes = require('./routes/funcoes');
-const setoresPublicRoutes = require('./routes/setoresPublic'); // 🔓 GET setores sem token
-
-app.use('/api/auth', authRoutes);
-app.use('/api/funcoes', funcoesRoutes);
-app.use('/api/setores', setoresPublicRoutes); // apenas GET
-
-// -------------------------------
-//    MIDDLEWARE DE AUTENTICAÇÃO
-// -------------------------------
-const autenticarToken = require('./middlewares/authMiddleware');
-app.use(autenticarToken);
-
-// -------------------------------
-//          ROTAS PRIVADAS
-// -------------------------------
-const setoresRoutes = require('./routes/setores'); // rotas protegidas: POST, PUT, DELETE
+const setoresRoutes = require('./routes/setores'); // Rota unificada de setores
 const usuarioRoutes = require('./routes/usuarios');
 const cadastroRoutes = require('./routes/cadastros');
 const inventarioRoutes = require('./routes/inventario');
@@ -62,25 +57,45 @@ const auditoriaRoutes = require('./routes/auditoria');
 const inventarioLgpdRoutes = require('./routes/inventarioLgpd');
 const adminRoutes = require('./routes/admin');
 
-app.use('/api/setores', setoresRoutes); // protegido após token
-app.use('/api/usuarios', usuarioRoutes);
-app.use('/api/cadastros', cadastroRoutes);
-app.use('/api/inventario', inventarioRoutes);
-app.use('/api/auditoria', auditoriaRoutes);
-app.use('/api/inventario-pessoal', inventarioLgpdRoutes);
-app.use('/api/admin', adminRoutes);
+// --- Aplicação das Rotas ---
 
-// -------------------------------
-//     INICIALIZAÇÃO DO SERVIDOR
-// -------------------------------
-// A porta é lida da variável de ambiente, com 3000 como padrão.
+// Rotas que são total ou parcialmente públicas
+app.use('/api/auth', authRoutes);
+app.use('/api/funcoes', funcoesRoutes);
+app.use('/api/setores', setoresRoutes); // Agora unificada. A própria rota decide o que é público/privado.
+
+// Rotas que são 100% privadas (note o 'autenticarToken' antes de cada uma)
+app.use('/api/usuarios', autenticarToken, usuarioRoutes);
+app.use('/api/cadastros', autenticarToken, cadastroRoutes);
+app.use('/api/inventario', autenticarToken, inventarioRoutes);
+app.use('/api/auditoria', autenticarToken, auditoriaRoutes);
+app.use('/api/inventario-pessoal', autenticarToken, inventarioLgpdRoutes);
+app.use('/api/admin', autenticarToken, adminRoutes);
+
+// =================================================================
+//                      TRATAMENTO DE ERROS E 404
+// =================================================================
+
+// --- Handler para rotas não encontradas (404) ---
+app.use((req, res, next) => {
+  res.status(404).json({ message: 'Endpoint não encontrado.' });
+});
+
+// --- Handler de Erro Global ---
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Ocorreu um erro interno no servidor.' });
+});
+
+// =================================================================
+//                      INICIALIZAÇÃO DO SERVIDOR
+// =================================================================
 const PORT = process.env.PORT || 3000;
 
 const server = app.listen(PORT, () => {
   console.log(`🚀 Servidor backend rodando na porta ${PORT}`);
 });
 
-// Tratamento de erro caso a porta esteja ocupada
 server.on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
     console.error(`❌ Porta ${PORT} já está em uso. Finalize o processo ou use outra porta.`);

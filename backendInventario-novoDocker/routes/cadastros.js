@@ -6,9 +6,9 @@ const Joi = require('joi');
 const {
   cadastrarCadastro,
   aprovarCadastro,
-  rejeitarCadastro, // Certifique-se que esta função está sendo exportada do seu controller
+  rejeitarCadastro,
   listarPendentes,
-  // ...outras funções
+  cadastrarCoordenadorDireto
 } = require('../controllers/cadastroController');
 
 // Importando os middlewares
@@ -22,7 +22,7 @@ const schemaCadastro = Joi.object({
   senha: Joi.string().min(6).required(),
   tipo_usuario: Joi.string().valid('COORDENADOR', 'USUARIO').required(),
   sigla_setor: Joi.string().required(),
-  funcao_id: Joi.number().integer().required() // <<< ADICIONE ESTA LINHA
+  funcao_id: Joi.number().integer().required()
 });
 
 // Middleware de validação
@@ -34,20 +34,25 @@ const validarCorpoDaRequisicao = (req, res, next) => {
   next();
 };
 
-
 // --- ROTAS DEFINIDAS ---
 
-// Rota para CRIAR uma nova SOLICITAÇÃO de cadastro
+// ✅ CORRIGIDO: Rota para iniciar o processo de cadastro (usuário ou coordenador)
 router.post(
   '/',
   autenticarToken,
   verificarPerfil([1, 2]),
   validarCorpoDaRequisicao,
-  cadastrarCadastro
+  (req, res) => {
+    // A lógica de redirecionamento agora é feita de forma mais clara
+    if (req.body.tipo_usuario === 'COORDENADOR') {
+      cadastrarCoordenadorDireto(req, res);
+    } else {
+      cadastrarCadastro(req, res);
+    }
+  }
 );
 
-// Rota para APROVAR uma solicitação de cadastro
-// Usando PATCH pois é uma atualização parcial (mudar o status)
+// Rota para APROVAR uma solicitação de cadastro (apenas para usuários comuns)
 router.patch(
   '/aprovar/:id',
   autenticarToken,
@@ -55,18 +60,15 @@ router.patch(
   aprovarCadastro
 );
 
-// Rota para REJEITAR uma solicitação de cadastro (CORREÇÃO)
-// A rota que estava faltando ou definida incorretamente.
+// Rota para REJEITAR uma solicitação de cadastro
 router.patch(
-  '/rejeitar/:id', // Garante que a rota exista e use o método PATCH
+  '/rejeitar/:id',
   autenticarToken,
   verificarPerfil([1, 2]),
   rejeitarCadastro
 );
 
-
-// Rota para LISTAR os cadastros pendentes
+// Rota para LISTAR os cadastros pendentes (apenas para usuários comuns)
 router.get('/pendentes', autenticarToken, verificarPerfil([1, 2]), listarPendentes);
-
 
 module.exports = router;

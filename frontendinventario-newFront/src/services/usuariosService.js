@@ -13,7 +13,6 @@ export async function createUsuario(data) {
 }
 
 export async function updateUsuario(id, data) {
-  // Alterado para PUT, conforme a rota do backend
   return api.put(`/usuarios/${id}`, data);
 }
 
@@ -21,7 +20,6 @@ export async function deleteUsuario(id) {
   return api.delete(`/usuarios/${id}`);
 }
 
-// NOVA FUNÇÃO: Para chamar a API de redefinição de senha
 export async function resetPassword(id, novaSenha) {
   return api.patch(`/usuarios/${id}/reset-password`, { senha: novaSenha });
 }

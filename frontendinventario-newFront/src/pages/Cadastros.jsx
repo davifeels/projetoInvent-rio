@@ -1,17 +1,20 @@
+// src/pages/Cadastros.jsx
+
 import React, { useState, useEffect, useCallback } from 'react';
-import api from '../api/axios'; // ✅ Caminho ajustado para sair de src/pages e acessar src/api
-import './Cadastros.css'; // ✅ Caminho correto se o CSS está na mesma pasta do componente
+import api from '../api/axios';
+import './Cadastros.css';
 import { jwtDecode } from 'jwt-decode';
 
-
 export default function Cadastros() {
-  const [colaborador, setColaborador] = useState({
+  const [formData, setFormData] = useState({
     nome: '',
     email: '',
     senha: '',
     sigla_setor: '',
     funcao_id: '',
-    tipo_usuario: 'COORDENADOR',
+    // ✅ CORRIGIDO: O tipo de usuário e perfil agora são selecionáveis no formulário
+    tipo_usuario: 'USUARIO',
+    perfil_id: '3'
   });
 
   const [setores, setSetores] = useState([]);
@@ -61,15 +64,26 @@ export default function Cadastros() {
     e.preventDefault();
     setErro('');
     setSucesso('');
-    if (!colaborador.funcao_id) {
-        setErro("Por favor, selecione a função do colaborador.");
+    
+    // ✅ CORRIGIDO: Validação para garantir que um perfil foi selecionado.
+    if (!formData.perfil_id) {
+        setErro("Por favor, selecione o perfil do colaborador.");
         return;
     }
 
     try {
-      const response = await api.post('/cadastros', colaborador);
-      setSucesso(response.data.message);
-      setColaborador({ nome: '', email: '', senha: '', sigla_setor: '', funcao_id: '', tipo_usuario: 'COORDENADOR' });
+      let response;
+      if (formData.perfil_id === '2') {
+        // ✅ CORRIGIDO: Rota para cadastro DIRETO de coordenador
+        response = await api.post('/cadastros/coordenador-direto', formData);
+        setSucesso(response.data.message);
+      } else {
+        // ✅ CORRIGIDO: Rota para solicitação PENDENTE de usuário comum
+        response = await api.post('/cadastros', formData);
+        setSucesso(response.data.message);
+      }
+
+      setFormData({ nome: '', email: '', senha: '', sigla_setor: '', funcao_id: '', tipo_usuario: 'USUARIO', perfil_id: '3' });
       fetchPendentes();
     } catch (error) {
       console.error('Erro ao cadastrar:', error);
@@ -102,20 +116,28 @@ export default function Cadastros() {
   };
 
   const handleChange = (e) => {
-    setColaborador({ ...colaborador, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+  
+  // ✅ CORRIGIDO: Renderização do formulário para permitir a escolha de perfil e setor
   return (
     <div className="cadastros-container">
-      <h2>Cadastrar Coordenador</h2>
+      <h2>Cadastrar Colaborador</h2>
       {erro && <p className="error">{erro}</p>}
       {sucesso && <p className="success">{sucesso}</p>}
 
       <form className="cadastros-form" onSubmit={handleSubmit}>
-        <input name="nome" placeholder="Nome" value={colaborador.nome} onChange={handleChange} required />
-        <input name="email" type="email" placeholder="Email" value={colaborador.email} onChange={handleChange} required />
-        <input name="senha" type="password" placeholder="Senha" value={colaborador.senha} onChange={handleChange} required />
-        <select name="sigla_setor" value={colaborador.sigla_setor} onChange={handleChange} required>
+        <input name="nome" placeholder="Nome" value={formData.nome} onChange={handleChange} required />
+        <input name="email" type="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
+        <input name="senha" type="password" placeholder="Senha" value={formData.senha} onChange={handleChange} required />
+        
+        <select name="perfil_id" value={formData.perfil_id} onChange={handleChange} required>
+          <option value="">Selecione o perfil</option>
+          <option value="2">Coordenador</option>
+          <option value="3">Usuário</option>
+        </select>
+        
+        <select name="sigla_setor" value={formData.sigla_setor} onChange={handleChange} required>
           <option value="">Selecione o setor</option>
           {setores.map((s) => (
             <option key={s.id || s.sigla} value={s.sigla}>
@@ -124,16 +146,16 @@ export default function Cadastros() {
           ))}
         </select>
         
-        <select name="funcao_id" value={colaborador.funcao_id} onChange={handleChange} required>
-            <option value="">Selecione a função</option>
-            {funcoes.map((f) => (
-                <option key={f.id} value={f.id}>
-                    {f.nome}
-                </option>
-            ))}
+        <select name="funcao_id" value={formData.funcao_id} onChange={handleChange} required>
+          <option value="">Selecione a função</option>
+          {funcoes.map((f) => (
+            <option key={f.id} value={f.id}>
+              {f.nome}
+            </option>
+          ))}
         </select>
 
-        <button type="submit">Enviar Solicitação</button>
+        <button type="submit">Enviar</button>
       </form>
 
       <h3>Solicitações Pendentes</h3>
