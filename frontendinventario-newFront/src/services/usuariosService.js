@@ -1,7 +1,10 @@
 import api from '../api/axios';
 
+/**
+ * Retorna todos os usuários (MASTER, COORDENADOR, USUÁRIO)
+ */
 export async function fetchUsuarios() {
-  return api.get('/usuarios');
+  return api.get('/usuarios'); // backend deve retornar todos
 }
 
 export async function fetchUsuarioPorId(id) {
@@ -33,11 +36,9 @@ export async function rejeitarUsuario(id) {
 }
 
 export async function fetchUsuariosPendentes() {
-  return api.get('/usuarios/pendentes');
+  return api.get('/usuarios/pendentes'); // usado apenas para tela de aprovação
 }
 
 export const exportUsuariosExcel = () => {
-  return api.get('/usuarios/exportar/excel', {
-    responseType: 'blob', 
-  });
+  return api.get('/usuarios/exportar/excel', { responseType: 'blob' });
 };

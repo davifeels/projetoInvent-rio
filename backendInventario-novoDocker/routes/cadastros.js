@@ -15,7 +15,8 @@ const {
 const autenticarToken = require('../middlewares/authMiddleware');
 const verificarPerfil = require('../middlewares/verificarPerfil');
 
-// Schema de validação para a solicitação de um novo cadastro.
+// Schema de validação para a solicitação de um novo cadastro
+// ⚠️ Removemos qualquer menção a perfil_id, apenas tipo_usuario
 const schemaCadastro = Joi.object({
   nome: Joi.string().min(3).required(),
   email: Joi.string().email().required(),
@@ -36,23 +37,23 @@ const validarCorpoDaRequisicao = (req, res, next) => {
 
 // --- ROTAS DEFINIDAS ---
 
-// ✅ CORRIGIDO: Rota para iniciar o processo de cadastro (usuário ou coordenador)
+// Criar novo cadastro (usuário ou coordenador)
 router.post(
   '/',
   autenticarToken,
-  verificarPerfil([1, 2]),
+  verificarPerfil([1, 2]), // Apenas Master e Coordenador podem criar
   validarCorpoDaRequisicao,
   (req, res) => {
-    // A lógica de redirecionamento agora é feita de forma mais clara
+    // Se for coordenador, cria direto
     if (req.body.tipo_usuario === 'COORDENADOR') {
-      cadastrarCoordenadorDireto(req, res);
-    } else {
-      cadastrarCadastro(req, res);
+      return cadastrarCoordenadorDireto(req, res);
     }
+    // Se for usuário comum, envia para aprovação
+    return cadastrarCadastro(req, res);
   }
 );
 
-// Rota para APROVAR uma solicitação de cadastro (apenas para usuários comuns)
+// Aprovar cadastro pendente
 router.patch(
   '/aprovar/:id',
   autenticarToken,
@@ -60,7 +61,7 @@ router.patch(
   aprovarCadastro
 );
 
-// Rota para REJEITAR uma solicitação de cadastro
+// Rejeitar cadastro pendente
 router.patch(
   '/rejeitar/:id',
   autenticarToken,
@@ -68,7 +69,12 @@ router.patch(
   rejeitarCadastro
 );
 
-// Rota para LISTAR os cadastros pendentes (apenas para usuários comuns)
-router.get('/pendentes', autenticarToken, verificarPerfil([1, 2]), listarPendentes);
+// Listar cadastros pendentes
+router.get(
+  '/pendentes',
+  autenticarToken,
+  verificarPerfil([1, 2]),
+  listarPendentes
+);
 
 module.exports = router;

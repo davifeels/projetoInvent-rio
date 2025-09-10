@@ -7,19 +7,15 @@ const { obterSetorIdPorSigla, criarUsuarioEretornarId } = require('./usuarioCont
 
 /**
  * Cria uma nova SOLICITAÇÃO de cadastro, que fica com status "pendente".
- * Este fluxo é mantido para USUÁRIOS COMUNS.
  */
 const cadastrarCadastro = async (req, res) => {
-    if (!req.user) {
-        return res.status(401).json({ message: 'Usuário não autenticado. Acesso negado.' });
-    }
+    if (!req.user) return res.status(401).json({ message: 'Usuário não autenticado.' });
 
     const { nome, email, senha, tipo_usuario, sigla_setor, funcao_id } = req.body;
     const quemSolicita = req.user;
 
     try {
         const setor_id = await obterSetorIdPorSigla(sigla_setor);
-
         if (quemSolicita.perfil_id === 2 && setor_id !== quemSolicita.setor_id) {
             return res.status(403).json({ message: 'Coordenadores só podem criar solicitações para seu próprio setor.' });
         }
@@ -35,18 +31,22 @@ const cadastrarCadastro = async (req, res) => {
             nome, email, setor_id, funcao_id, quemSolicita.id, hashSenha, tipo_usuario, perfil_id_cadastro
         ]);
 
-        await registrarAuditoria(quemSolicita.id, 'CADASTRO_SOLICITADO', quemSolicita.setor_id, { novo_cadastro_id: results.insertId, email_solicitado: email, ip: req.ip });
+        await registrarAuditoria(quemSolicita.id, 'CADASTRO_SOLICITADO', quemSolicita.setor_id, {
+            novo_cadastro_id: results.insertId, email_solicitado: email, ip: req.ip
+        });
 
         res.status(201).json({ message: 'Solicitação de cadastro enviada com sucesso e aguardando aprovação.', id: results.insertId });
 
     } catch (error) {
         console.error('Erro ao solicitar cadastro:', error);
-        await registrarAuditoria(quemSolicita.id, 'CADASTRO_SOLICITACAO_FALHA', quemSolicita.setor_id, { erro: error.message, email_solicitado: email, ip: req.ip });
+        await registrarAuditoria(quemSolicita.id, 'CADASTRO_SOLICITACAO_FALHA', quemSolicita.setor_id, {
+            erro: error.message, email_solicitado: email, ip: req.ip
+        });
 
         if (error.code === 'ER_DUP_ENTRY') {
             return res.status(409).json({ message: 'Já existe uma solicitação ou usuário com este e-mail.' });
         }
-        res.status(error.statusCode || 500).json({ message: error.message || 'Erro interno ao processar a solicitação.' });
+        res.status(error.statusCode || 500).json({ message: error.message || 'Erro interno.' });
     }
 };
 
@@ -54,69 +54,82 @@ const cadastrarCadastro = async (req, res) => {
  * Cadastra um Coordenador diretamente, sem necessidade de aprovação.
  */
 const cadastrarCoordenadorDireto = async (req, res) => {
-    if (!req.user) {
-        return res.status(401).json({ message: 'Usuário não autenticado. Acesso negado.' });
-    }
+    if (!req.user) return res.status(401).json({ message: 'Usuário não autenticado.' });
 
     const { nome, email, senha, sigla_setor, funcao_id } = req.body;
     const quemSolicita = req.user;
 
     try {
         const setor_id = await obterSetorIdPorSigla(sigla_setor);
-
         if (quemSolicita.perfil_id === 2 && setor_id !== quemSolicita.setor_id) {
             return res.status(403).json({ message: 'Coordenadores só podem criar usuários para seu próprio setor.' });
         }
 
         const hashSenha = await bcrypt.hash(senha, 10);
 
-        const novoUsuarioId = await criarUsuarioEretornarId(
-            {
-                nome,
-                email,
-                senha: hashSenha,
-                tipo_usuario: 'COORDENADOR',
-                perfil_id: 2,
-                setor_id,
-                funcao_id,
-                status: 'ativo'
-            },
-            quemSolicita.id,
-            quemSolicita.setor_id,
-            null,
-            null
-        );
+        const novoUsuarioId = await criarUsuarioEretornarId({
+            nome,
+            email,
+            senha: hashSenha,
+            tipo_usuario: 'COORDENADOR',
+            perfil_id: 2,
+            setor_id,
+            funcao_id,
+            status: 'ativo'
+        }, quemSolicita.id, quemSolicita.setor_id);
 
-        await registrarAuditoria(quemSolicita.id, 'COORDENADOR_CRIADO_DIRETO', quemSolicita.setor_id, { novo_usuario_id: novoUsuarioId, email_solicitado: email, ip: req.ip });
+        await registrarAuditoria(quemSolicita.id, 'COORDENADOR_CRIADO_DIRETO', quemSolicita.setor_id, {
+            novo_usuario_id: novoUsuarioId, email_solicitado: email, ip: req.ip
+        });
 
         res.status(201).json({ message: 'Coordenador criado com sucesso!', id: novoUsuarioId });
 
     } catch (error) {
         console.error('Erro ao cadastrar Coordenador diretamente:', error);
-        await registrarAuditoria(quemSolicita.id, 'COORDENADOR_CADASTRO_FALHA', quemSolicita.setor_id, { erro: error.message, email_solicitado: email, ip: req.ip });
+        await registrarAuditoria(quemSolicita.id, 'COORDENADOR_CADASTRO_FALHA', quemSolicita.setor_id, {
+            erro: error.message, email_solicitado: email, ip: req.ip
+        });
 
         if (error.code === 'ER_DUP_ENTRY') {
             return res.status(409).json({ message: 'Já existe um usuário com este e-mail.' });
         }
-        res.status(error.statusCode || 500).json({ message: error.message || 'Erro interno ao processar a solicitação.' });
+        res.status(error.statusCode || 500).json({ message: error.message || 'Erro interno.' });
     }
 };
 
 /**
- * Aprovar cadastro pendente
+ * Aprovar cadastro pendente e criar usuário ativo
  */
 const aprovarCadastro = async (req, res) => {
-    const { cadastro_id } = req.params;
+    const { id } = req.params; // id do cadastro
     const quemAprova = req.user;
 
     try {
-        // Atualiza o status do cadastro para "aprovado"
-        const query = `UPDATE cadastros SET status = 'aprovado' WHERE id = ?`;
-        await db.query(query, [cadastro_id]);
+        // Buscar cadastro pendente
+        const [cadastros] = await db.query('SELECT * FROM cadastros WHERE id = ? AND status = "pendente"', [id]);
+        if (cadastros.length === 0) return res.status(404).json({ message: 'Cadastro não encontrado ou já processado.' });
 
-        await registrarAuditoria(quemAprova.id, 'CADASTRO_APROVADO', quemAprova.setor_id, { cadastro_id, ip: req.ip });
+        const cadastro = cadastros[0];
 
-        res.json({ message: 'Cadastro aprovado com sucesso.' });
+        // Criar usuário na tabela usuarios
+        const novoUsuarioId = await criarUsuarioEretornarId({
+            nome: cadastro.nome,
+            email: cadastro.email,
+            senha: cadastro.senha_hash,
+            tipo_usuario: cadastro.tipo_usuario_solicitado,
+            perfil_id: cadastro.perfil_id_solicitado,
+            setor_id: cadastro.setor_id,
+            funcao_id: cadastro.funcao_id,
+            status: 'ativo'
+        }, quemAprova.id, quemAprova.setor_id);
+
+        // Atualizar status do cadastro
+        await db.query('UPDATE cadastros SET status = "aprovado" WHERE id = ?', [id]);
+
+        await registrarAuditoria(quemAprova.id, 'CADASTRO_APROVADO', quemAprova.setor_id, { cadastro_id: id, novo_usuario_id: novoUsuarioId, ip: req.ip });
+
+        res.json({ message: 'Cadastro aprovado e usuário criado com sucesso.' });
+
     } catch (error) {
         console.error('Erro ao aprovar cadastro:', error);
         res.status(500).json({ message: 'Erro ao aprovar cadastro.' });
@@ -127,14 +140,12 @@ const aprovarCadastro = async (req, res) => {
  * Rejeitar cadastro pendente
  */
 const rejeitarCadastro = async (req, res) => {
-    const { cadastro_id } = req.params;
+    const { id } = req.params;
     const quemRejeita = req.user;
 
     try {
-        const query = `UPDATE cadastros SET status = 'rejeitado' WHERE id = ?`;
-        await db.query(query, [cadastro_id]);
-
-        await registrarAuditoria(quemRejeita.id, 'CADASTRO_REJEITADO', quemRejeita.setor_id, { cadastro_id, ip: req.ip });
+        await db.query('UPDATE cadastros SET status = "rejeitado" WHERE id = ?', [id]);
+        await registrarAuditoria(quemRejeita.id, 'CADASTRO_REJEITADO', quemRejeita.setor_id, { cadastro_id: id, ip: req.ip });
 
         res.json({ message: 'Cadastro rejeitado com sucesso.' });
     } catch (error) {
@@ -148,8 +159,7 @@ const rejeitarCadastro = async (req, res) => {
  */
 const listarPendentes = async (req, res) => {
     try {
-        const query = `SELECT * FROM cadastros WHERE status = 'pendente'`;
-        const [results] = await db.query(query);
+        const [results] = await db.query('SELECT * FROM cadastros WHERE status = "pendente"');
         res.json(results);
     } catch (error) {
         console.error('Erro ao listar cadastros pendentes:', error);
