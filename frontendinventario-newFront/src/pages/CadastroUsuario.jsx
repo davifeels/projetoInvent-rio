@@ -1,196 +1,188 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import {
-  fetchTodosUsuarios, // novo endpoint que retorna ativos + pendentes + rejeitados
-  deleteUsuario,
-  aprovarUsuario,
-  rejeitarUsuario,
-  exportUsuariosExcel
-} from '../services/usuariosService';
-import './usuarios.css';
+import { createUsuario } from '../services/usuariosService';
+import { fetchSetores } from '../services/setoresService';
+import { fetchFuncoes } from '../services/funcoesService';
+import './cadastroUsuario.css';
 
-export default function Usuarios() {
+export default function CadastroUsuario() {
   const navigate = useNavigate();
-  const { usuario: usuarioLogado } = useAuth();
+  const { usuario } = useAuth(); // Usuário logado
 
-  const [usuarios, setUsuarios] = useState([]);
+  // Estado inicial do formulário, perfil 'Usuário' como padrão
+  const [formData, setFormData] = useState({
+    nome: '',
+    email: '',
+    senha: '',
+    perfil_id: '3', // Inicia com 'Usuário' selecionado
+    funcao_id: '',
+    sigla_setor: '',
+    status: 'ativo',
+  });
+
+  // Estados para os dados dos dropdowns
+  const [setores, setSetores] = useState([]);
+  const [funcoes, setFuncoes] = useState([]);
+  const [perfisDisponiveis, setPerfisDisponiveis] = useState([]);
+
+  // Estados para controle da UI
   const [loading, setLoading] = useState(true);
-  const [exporting, setExporting] = useState(false);
   const [erro, setErro] = useState('');
   const [sucesso, setSucesso] = useState('');
 
-  // Carrega todos os usuários (ativos + pendentes + rejeitados)
-  const carregarUsuarios = useCallback(async () => {
+  // Verifica o perfil do usuário logado
+  const isMaster = usuario?.perfil_id === 1;
+  const isCoordenador = usuario?.perfil_id === 2;
+
+  // Carrega os dados necessários para os campos <select> do formulário
+  const carregarDadosDoFormulario = useCallback(async () => {
+    setLoading(true);
+    setErro('');
     try {
-      setLoading(true);
-      setErro('');
-      const res = await fetchTodosUsuarios();
-      setUsuarios(Array.isArray(res.data) ? res.data : []);
+      // Busca as funções (necessário para todos)
+      const resFuncoes = await fetchFuncoes();
+      setFuncoes(resFuncoes.data);
+
+      // Define os perfis que o usuário logado pode criar
+      const todosPerfis = [
+        { id: "1", nome: "Master" },
+        { id: "2", nome: "Coordenador" },
+        { id: "3", nome: "Usuário" },
+      ];
+      
+      // Master pode criar Coordenador e Usuário
+      if (isMaster) {
+        setPerfisDisponiveis(todosPerfis.filter(p => p.id !== "1")); 
+        const resSetores = await fetchSetores(); // Master também carrega todos os setores
+        setSetores(resSetores.data);
+      } 
+      // Coordenador só pode criar Usuário
+      else if (isCoordenador) {
+        setPerfisDisponiveis(todosPerfis.filter(p => p.id === "3"));
+        // Define o setor do formulário como o setor do Coordenador logado
+        setFormData(prev => ({ ...prev, sigla_setor: usuario.sigla_setor }));
+      }
+
     } catch (err) {
-      console.error('Erro ao buscar usuários:', err);
-      setErro(err.response?.data?.message || 'Não foi possível carregar os usuários.');
-      setUsuarios([]);
+      console.error("Erro ao carregar dados para o formulário:", err);
+      setErro("Falha ao carregar opções. Tente recarregar a página.");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [isMaster, isCoordenador, usuario]);
 
+  // Executa o carregamento dos dados quando o componente é montado
   useEffect(() => {
-    carregarUsuarios();
-  }, [carregarUsuarios]);
-
-  const handleEdit = (usuarioId) => navigate(`/usuarios/editar/${usuarioId}`);
-
-  const handleDelete = async (usuarioId) => {
-    if (!window.confirm('Tem certeza que deseja excluir este usuário?')) return;
-    try {
-      const response = await deleteUsuario(usuarioId);
-      setSucesso(response.data?.message || 'Usuário excluído com sucesso.');
-      setErro('');
-      await carregarUsuarios();
-    } catch (err) {
-      setErro(err.response?.data?.message || 'Falha ao excluir o usuário.');
-      setSucesso('');
+    if (usuario) {
+      carregarDadosDoFormulario();
     }
+  }, [usuario, carregarDadosDoFormulario]);
+
+  // Atualiza o estado do formulário a cada mudança nos inputs
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAprovar = async (usuarioId) => {
-    try {
-      const response = await aprovarUsuario(usuarioId);
-      setSucesso(response.data?.message || 'Usuário aprovado com sucesso.');
-      setErro('');
-      await carregarUsuarios();
-    } catch (err) {
-      setErro(err.response?.data?.message || 'Falha ao aprovar o usuário.');
-      setSucesso('');
-    }
-  };
-
-  const handleRejeitar = async (usuarioId) => {
-    if (!window.confirm('Tem certeza que deseja rejeitar esta solicitação?')) return;
-    try {
-      const response = await rejeitarUsuario(usuarioId);
-      setSucesso(response.data?.message || 'Usuário rejeitado com sucesso.');
-      setErro('');
-      await carregarUsuarios();
-    } catch (err) {
-      setErro(err.response?.data?.message || 'Falha ao rejeitar o usuário.');
-      setSucesso('');
-    }
-  };
-
-  const handleExport = async () => {
-    setExporting(true);
+  // Lida com o envio do formulário
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setErro('');
+    setSucesso('');
+    setLoading(true);
+
+    // Prepara os dados para envio, convertendo IDs para números
+    const dadosParaEnviar = {
+      ...formData,
+      perfil_id: parseInt(formData.perfil_id, 10),
+      funcao_id: parseInt(formData.funcao_id, 10),
+      // <<< CORREÇÃO APLICADA AQUI >>>
+      // Adiciona o campo 'tipo_usuario' que o backend espera.
+      tipo_usuario: parseInt(formData.perfil_id, 10) === 2 ? 'COORDENADOR' : 'USUARIO',
+    };
+
     try {
-      const response = await exportUsuariosExcel();
-      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      const dataFormatada = new Date().toISOString().split('T')[0];
-      link.href = url;
-      link.setAttribute('download', `Relatorio_Usuarios_${dataFormatada}.xlsx`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      await createUsuario(dadosParaEnviar);
+      setSucesso('Usuário cadastrado com sucesso!');
+      setTimeout(() => navigate('/usuarios'), 2000); // Redireciona após 2 segundos
     } catch (error) {
-      console.error(error);
-      setErro('Falha ao gerar o relatório em Excel.');
+      console.error('Erro ao cadastrar usuário:', error);
+      setErro(error.response?.data?.message || 'Erro ao cadastrar usuário. Verifique os dados.');
     } finally {
-      setExporting(false);
+      setLoading(false);
     }
   };
 
-  const getNomePerfil = (perfilId) => {
-    switch (perfilId) {
-      case 1: return 'Master';
-      case 2: return 'Coordenador';
-      case 3: return 'Usuário';
-      default: return 'Desconhecido';
-    }
-  };
+  if (loading && !sucesso) {
+    return <div className="form-container"><p>Carregando formulário...</p></div>;
+  }
 
   return (
-    <div className="usuarios-container">
-      <div className="usuarios-header">
-        <h2>Gerenciamento de Usuários</h2>
-        <div className="header-buttons">
-          {(usuarioLogado?.perfil_id === 1 || usuarioLogado?.perfil_id === 2) && (
-            <>
-              <button className="btn-create" onClick={() => navigate('/usuarios/novo')}>
-                Cadastrar Novo Usuário
-              </button>
-              <button className="btn-export" onClick={handleExport} disabled={exporting || loading}>
-                {exporting ? 'Exportando...' : 'Exportar para Excel'}
-              </button>
-            </>
-          )}
-        </div>
-      </div>
+    <div className="form-container">
+      <form onSubmit={handleSubmit} className="form-layout" autoComplete="off">
+        <header className="form-header">
+          <h2>Cadastrar Novo Usuário</h2>
+          <p>Preencha os dados para criar um novo acesso ao sistema.</p>
+        </header>
 
-      {sucesso && <p className="message success">{sucesso}</p>}
-      {erro && <p className="message error">{erro}</p>}
+        {erro && <p className="message error">{erro}</p>}
+        {sucesso && <p className="message success">{sucesso}</p>}
 
-      {loading ? (
-        <p>Carregando usuários...</p>
-      ) : (
-        <div className="table-responsive">
-          <table className="usuarios-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Perfil</th>
-                <th>Setor</th>
-                <th>Status</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {usuarios.length > 0 ? (
-                usuarios.map((user) => (
-                  <tr key={user.id}>
-                    <td>{user.id}</td>
-                    <td>{user.nome}</td>
-                    <td>{user.email}</td>
-                    <td>{getNomePerfil(user.perfil_id || user.perfil_id_solicitado)}</td>
-                    <td>{user.sigla_setor || 'N/A'}</td>
-                    <td>
-                      <span className={`status status-${user.status?.toLowerCase().replace(/ /g, '-').replace(/[()]/g, '')}`}>
-                        {user.status || 'N/A'}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="action-buttons">
-                        {user.status === 'pendente' ? (
-                          <>
-                            <button className="btn-approve" onClick={() => handleAprovar(user.id)}>Aprovar</button>
-                            <button className="btn-reject" onClick={() => handleRejeitar(user.id)}>Rejeitar</button>
-                          </>
-                        ) : (
-                          <>
-                            <button className="btn-edit" onClick={() => handleEdit(user.id)}>Editar</button>
-                            {usuarioLogado?.perfil_id === 1 && (
-                              <button className="btn-delete" onClick={() => handleDelete(user.id)}>Excluir</button>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7">Nenhum usuário encontrado.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+        <div className="form-grid">
+          <div className="form-group full-width">
+            <label htmlFor="nome">Nome Completo</label>
+            <input id="nome" type="text" name="nome" value={formData.nome} onChange={handleChange} required autoComplete="off" />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="perfil_id">Perfil de Acesso</label>
+            <select id="perfil_id" name="perfil_id" value={formData.perfil_id} onChange={handleChange} required>
+              <option value="">Selecione o perfil...</option>
+              {perfisDisponiveis.map(perfil => (
+                <option key={perfil.id} value={perfil.id}>{perfil.nome}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input id="email" type="email" name="email" value={formData.email} onChange={handleChange} required autoComplete="off" />
+          </div>
+          <div className="form-group">
+            <label htmlFor="senha">Senha Provisória</label>
+            <input id="senha" type="password" name="senha" value={formData.senha} onChange={handleChange} required minLength="6" autoComplete="new-password" />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="funcao_id">Função</label>
+            <select id="funcao_id" name="funcao_id" value={formData.funcao_id} onChange={handleChange} required>
+              <option value="">Selecione a função...</option>
+              {funcoes.map(funcao => (<option key={funcao.id} value={funcao.id}>{funcao.nome}</option>))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="sigla_setor">Setor</label>
+            {/* Se for Coordenador, mostra um campo desabilitado com o setor dele */}
+            {isCoordenador ? (
+              <input type="text" className="input-disabled" value={usuario?.sigla_setor || 'N/A'} disabled />
+            ) : (
+            /* Se for Master, mostra um dropdown com todos os setores */
+              <select id="sigla_setor" name="sigla_setor" value={formData.sigla_setor} onChange={handleChange} required>
+                <option value="">Selecione o setor...</option>
+                {setores.map(setor => (<option key={setor.id} value={setor.sigla}>{setor.nome} ({setor.sigla})</option>))}
+              </select>
+            )}
+          </div>
         </div>
-      )}
+
+        <footer className="form-actions">
+          <Link to="/usuarios" className="btn-secondary">Cancelar</Link>
+          <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Salvando...' : 'Salvar Usuário'}</button>
+        </footer>
+      </form>
     </div>
   );
 }
+

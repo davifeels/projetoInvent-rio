@@ -22,34 +22,49 @@ dbPool.getConnection()
   });
 
 // =================================================================
-//                            MIDDLEWARES
+//                              MIDDLEWARES
 // =================================================================
 
 // --- Configuração de Segurança (CORS e Helmet) ---
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3001',
-  credentials: true,
+  origin: [
+    'http://localhost:3001',       // frontend local
+    'http://172.19.0.2:3000',      // backend docker/local network
+    process.env.CORS_ORIGIN        // URL adicional em produção
+  ].filter(Boolean),
+  credentials: true,              // permite cookies e headers de autenticação
   allowedHeaders: ['Content-Type', 'Authorization'],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
 };
+
+// Aplica CORS e Helmet
 app.use(cors(corsOptions));
 app.use(helmet());
 
-// --- Middlewares para processamento do corpo da requisição ---
+// --- Middlewares para processar JSON e URL-encoded ---
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// --- Middleware para responder preflight OPTIONS em todas as rotas ---
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.sendStatus(204); // sem conteúdo
+  } else {
+    next();
+  }
+});
 
 // =================================================================
 //                                 ROTAS
 // =================================================================
-
-// --- Middleware de Autenticação (será usado por rota) ---
 const autenticarToken = require('./middlewares/authMiddleware');
 
-// --- Definição das Rotas ---
 const authRoutes = require('./routes/auth');
 const funcoesRoutes = require('./routes/funcoes');
-const setoresRoutes = require('./routes/setores'); // Rota unificada de setores
+const setoresRoutes = require('./routes/setores');
 const usuarioRoutes = require('./routes/usuarios');
 const cadastroRoutes = require('./routes/cadastros');
 const inventarioRoutes = require('./routes/inventario');
@@ -57,14 +72,12 @@ const auditoriaRoutes = require('./routes/auditoria');
 const inventarioLgpdRoutes = require('./routes/inventarioLgpd');
 const adminRoutes = require('./routes/admin');
 
-// --- Aplicação das Rotas ---
-
-// Rotas que são total ou parcialmente públicas
+// Rotas públicas
 app.use('/api/auth', authRoutes);
 app.use('/api/funcoes', funcoesRoutes);
-app.use('/api/setores', setoresRoutes); // Agora unificada. A própria rota decide o que é público/privado.
+app.use('/api/setores', setoresRoutes);
 
-// Rotas que são 100% privadas (note o 'autenticarToken' antes de cada uma)
+// Rotas privadas (autenticação + perfil)
 app.use('/api/usuarios', autenticarToken, usuarioRoutes);
 app.use('/api/cadastros', autenticarToken, cadastroRoutes);
 app.use('/api/inventario', autenticarToken, inventarioRoutes);
@@ -75,13 +88,10 @@ app.use('/api/admin', autenticarToken, adminRoutes);
 // =================================================================
 //                      TRATAMENTO DE ERROS E 404
 // =================================================================
-
-// --- Handler para rotas não encontradas (404) ---
 app.use((req, res, next) => {
   res.status(404).json({ message: 'Endpoint não encontrado.' });
 });
 
-// --- Handler de Erro Global ---
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Ocorreu um erro interno no servidor.' });

@@ -14,24 +14,20 @@ export default function Usuarios() {
   const navigate = useNavigate();
   const { usuario: usuarioLogado } = useAuth();
 
-  const [usuarios, setUsuarios] = useState([]); // garante array inicial
+  const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
   const [erro, setErro] = useState('');
   const [sucesso, setSucesso] = useState('');
 
-  // Função para carregar usuários
   const carregarUsuarios = useCallback(async () => {
     try {
       setLoading(true);
-      setErro('');
-      const res = await fetchTodosUsuarios();
-      // Garante que sempre será array
-      setUsuarios(Array.isArray(res.data) ? res.data : []);
+      const res = await fetchUsuarios();
+      setUsuarios(res.data);
     } catch (err) {
       console.error("Erro ao buscar usuários:", err);
       setErro(err.response?.data?.message || 'Não foi possível carregar os usuários.');
-      setUsuarios([]); // fallback
     } finally {
       setLoading(false);
     }
@@ -47,36 +43,12 @@ export default function Usuarios() {
     if (!window.confirm('Tem certeza que deseja excluir este usuário?')) return;
     try {
       const response = await deleteUsuario(usuarioId);
-      setSucesso(response.data?.message || 'Usuário excluído com sucesso.');
+      setSucesso(response.data.message);
       setErro('');
-      await carregarUsuarios();
+      carregarUsuarios();
     } catch (err) {
+      console.error("Erro ao excluir usuário:", err);
       setErro(err.response?.data?.message || 'Falha ao excluir o usuário.');
-      setSucesso('');
-    }
-  };
-
-  const handleAprovar = async (usuarioId) => {
-    try {
-      const response = await aprovarUsuario(usuarioId);
-      setSucesso(response.data?.message || 'Usuário aprovado com sucesso.');
-      setErro('');
-      await carregarUsuarios();
-    } catch (err) {
-      setErro(err.response?.data?.message || 'Falha ao aprovar o usuário.');
-      setSucesso('');
-    }
-  };
-
-  const handleRejeitar = async (usuarioId) => {
-    if (!window.confirm('Tem certeza que deseja rejeitar esta solicitação?')) return;
-    try {
-      const response = await rejeitarUsuario(usuarioId);
-      setSucesso(response.data?.message || 'Usuário rejeitado com sucesso.');
-      setErro('');
-      await carregarUsuarios();
-    } catch (err) {
-      setErro(err.response?.data?.message || 'Falha ao rejeitar o usuário.');
       setSucesso('');
     }
   };
@@ -94,13 +66,41 @@ export default function Usuarios() {
       link.setAttribute('download', `Relatorio_Usuarios_${dataFormatada}.xlsx`);
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
+      link.parentNode.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error(error);
+      console.error('Erro ao exportar para Excel:', error);
       setErro('Falha ao gerar o relatório em Excel.');
     } finally {
       setExporting(false);
+    }
+  };
+
+  const handleAprovar = async (usuarioId) => {
+    if (!window.confirm('Deseja aprovar este usuário?')) return;
+    try {
+      await aprovarUsuario(usuarioId);
+      setSucesso('Usuário aprovado com sucesso!');
+      setErro('');
+      carregarUsuarios();
+    } catch (err) {
+      console.error(err);
+      setErro('Falha ao aprovar usuário.');
+      setSucesso('');
+    }
+  };
+
+  const handleRecusar = async (usuarioId) => {
+    if (!window.confirm('Deseja recusar este usuário?')) return;
+    try {
+      await rejeitarUsuario(usuarioId);
+      setSucesso('Usuário recusado com sucesso!');
+      setErro('');
+      carregarUsuarios();
+    } catch (err) {
+      console.error(err);
+      setErro('Falha ao recusar usuário.');
+      setSucesso('');
     }
   };
 
@@ -160,8 +160,8 @@ export default function Usuarios() {
                     <td>{getNomePerfil(user.perfil_id)}</td>
                     <td>{user.sigla_setor || 'N/A'}</td>
                     <td>
-                      <span className={`status status-${user.status?.toLowerCase().replace(/ /g, '-').replace(/[()]/g, '')}`}>
-                        {user.status || 'N/A'}
+                      <span className={`status status-${user.status?.toLowerCase()}`}>
+                        {user.status}
                       </span>
                     </td>
                     <td>
@@ -169,7 +169,7 @@ export default function Usuarios() {
                         {user.status === 'pendente' ? (
                           <>
                             <button className="btn-approve" onClick={() => handleAprovar(user.id)}>Aprovar</button>
-                            <button className="btn-reject" onClick={() => handleRejeitar(user.id)}>Rejeitar</button>
+                            <button className="btn-reject" onClick={() => handleRecusar(user.id)}>Recusar</button>
                           </>
                         ) : (
                           <>
