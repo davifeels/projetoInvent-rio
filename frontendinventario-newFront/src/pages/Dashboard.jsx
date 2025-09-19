@@ -14,7 +14,6 @@ export default function Dashboard() {
   const allCards = [
     { title: 'Inventário Geral', icon: '📦', path: '/inventario', allowed: [PROFILE_MASTER_ID, PROFILE_GESTOR_ID] },
     { title: 'Gerenciar Usuários', icon: '👥', path: '/usuarios', allowed: [PROFILE_MASTER_ID, PROFILE_GESTOR_ID] },
-    { title: 'Cadastrar Colaborador', icon: '🕴️', path: '/cadastros', allowed: [PROFILE_MASTER_ID] },
     { title: 'Gerenciar Setores', icon: '🏢', path: '/setores', allowed: [PROFILE_MASTER_ID] },
     { title: 'Auditoria do Sistema', icon: '📋', path: '/auditoria', allowed: [PROFILE_MASTER_ID, PROFILE_GESTOR_ID] },
     { title: 'Meu Inventário Pessoal', icon: '📝', path: '/meu-inventario', allowed: [PROFILE_MASTER_ID, PROFILE_GESTOR_ID, PROFILE_NORMAL_ID] },
