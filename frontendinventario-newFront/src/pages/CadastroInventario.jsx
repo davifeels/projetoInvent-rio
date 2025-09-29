@@ -1,7 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api/axios'; // ✅ Caminho ajustado corretamente (src/pages → src/api)
-import './cadastroinventario.css'; // ✅ Estilo localizado em src/pages
+import api from '../api/axios';
+import BackButton from '../components/BackButton';
+import './cadastroinventario.css';
 
 export default function CadastroInventario() {
   const [formData, setFormData] = useState({
@@ -66,6 +67,8 @@ export default function CadastroInventario() {
 
   return (
     <div className="page-container">
+      <BackButton />
+      
       <div className="page-header">
         <h1>Cadastro de Inventário de Dados</h1>
       </div>

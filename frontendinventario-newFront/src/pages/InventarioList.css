@@ -1,36 +1,57 @@
-/* /src/pages/InventarioList.css */
-
-/* 1. Container Principal da Página */
-.page-container-inventario {
-  width: 100%;
-  min-height: 100vh;
-  padding: 2.5rem 3rem; /* Espaçamento interno nas laterais e topo/base */
-  background-color: #f8fafc; /* Cor de fundo suave */
-}
-
-/* 2. Cabeçalho da Página (Título + Botões) */
-.page-header-inventario {
-  display: flex; /* ATIVA O FLEXBOX! */
-  justify-content: space-between; /* Título para um lado, botões para o outro */
-  align-items: center; /* Alinha verticalmente */
-  margin-bottom: 2.5rem;
-  flex-wrap: wrap; /* Permite que os itens quebrem linha em telas pequenas */
-  gap: 1.5rem; /* Espaçamento entre título e botões caso quebrem a linha */
-}
-
-.page-header-inventario h2 {
-  font-size: 2.25rem;
-  color: #1e293b;
+/* Estilos gerais */
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* 3. Container dos Botões de Ação */
-.header-actions-inventario {
+body {
+  background-color: #f5f7fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Container principal */
+.usuarios-container {
+  max-width: 12000px;
+  margin: 0 auto;
+  padding: 2rem;
+  padding-top: 5rem;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
+  position: relative;
+}
+
+/* Título */
+.usuarios-container h2 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #eee;
+  font-size: 1.8rem;
+}
+
+/* Estilos para o cabeçalho com botões */
+.usuarios-header {
   display: flex;
-  gap: 1rem; /* Espaçamento entre os botões */
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.header-actions-inventario button {
+.header-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-export,
+.btn-create {
   padding: 0.75rem 1.5rem;
   font-size: 0.95rem;
   font-weight: 600;
@@ -38,77 +59,91 @@
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
-  white-space: nowrap; /* Evita que o texto do botão quebre */
-}
-
-.header-actions-inventario .btn-export {
-  background-color: #166534; /* Verde Escuro */
-  color: white;
-}
-.header-actions-inventario .btn-export:hover {
-  background-color: #14532d;
-}
-
-.header-actions-inventario .btn-create {
-  background-color: #1d4ed8; /* Azul Escuro */
-  color: white;
-}
-.header-actions-inventario .btn-create:hover {
-  background-color: #1e40af;
-}
-
-/* 4. Painel que envolve a tabela */
-.panel-inventario {
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  overflow: hidden; /* Garante que a tabela não "vaze" do painel arredondado */
-}
-
-/* 5. Estilos da Tabela */
-.table-wrapper-inventario {
-  overflow-x: auto; /* Permite rolagem horizontal em telas pequenas */
-}
-
-.table-inventario {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.table-inventario th,
-.table-inventario td {
-  padding: 1rem 1.5rem;
-  text-align: left;
-  border-bottom: 1px solid #e5e7eb;
   white-space: nowrap;
 }
 
-.table-inventario thead th {
-  background-color: #f8fafc;
-  font-size: 0.75rem;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.btn-export {
+  background-color: #166534;
+  color: white;
 }
 
-.table-inventario tbody tr:last-child td {
-  border-bottom: none; /* Remove a borda da última linha */
+.btn-export:hover {
+  background-color: #14532d;
 }
 
-.table-inventario tbody tr:hover {
-  background-color: #f1f5f9;
+.btn-create {
+  background-color: #1d4ed8;
+  color: white;
 }
 
-/* Mensagens de erro ou carregamento */
-.error-message, .loading-message {
-  text-align: center;
-  padding: 2rem;
-  font-size: 1.1rem;
-  color: #64748b;
+.btn-create:hover {
+  background-color: #1e40af;
 }
 
-.error-message {
-  color: #dc2626;
-  background-color: #fee2e2;
+/* Lista de usuários */
+.usuarios-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.usuarios-list li {
+  background-color: #f8f9fa;
+  padding: 1.5rem;
   border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.usuarios-list li:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #e9ecef;
+}
+
+/* Estilo para o nome do usuário */
+.usuarios-list li::before {
+  content: '👤';
+  margin-right: 0.5rem;
+}
+
+/* Estilo para o email */
+.usuarios-list li span {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+/* Mensagem de erro */
+.error-message {
+  color: #dc3545;
+  text-align: center;
+  padding: 1rem;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+  margin: 1rem auto;
+  max-width: 600px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .usuarios-container {
+    padding: 1rem;
+    padding-top: 5rem;
+    margin: 1rem;
+  }
+  
+  .usuarios-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .usuarios-container h2 {
+    font-size: 1.4rem;
+  }
 }

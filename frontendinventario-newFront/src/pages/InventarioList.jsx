@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import api from '../api/axios';       // subindo uma pasta para src/api
+import api from '../api/axios';
+import BackButton from '../components/BackButton';
 import './usuariosList.css';
-
-
 
 export default function InventarioList() {
   const [itens, setItens] = useState([]);
@@ -35,7 +34,7 @@ export default function InventarioList() {
         if (res.data.length > 0 && res.data[0].nome_setor) {
           setSetorNome(`: ${res.data[0].nome_setor}`);
         } else {
-          setSetorNome(""); // Fica em branco se não houver setor
+          setSetorNome("");
         }
       })
       .catch(err => {
@@ -76,11 +75,12 @@ export default function InventarioList() {
   }
 
   return (
-    <div className="usuarios-container"> 
+    <div className="usuarios-container">
+      <BackButton />
+      
       <div className="usuarios-header">
         <h2>Inventário de Dados {setorNome}</h2>
         <div className="header-buttons">
-          {/* Botões alinhados à direita */}
           {(perfilId === 1 || perfilId === 2) && (
             <>
               <button

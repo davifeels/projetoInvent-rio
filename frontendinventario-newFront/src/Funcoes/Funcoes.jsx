@@ -1,7 +1,8 @@
 // src/pages/Funcoes.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { fetchFuncoes, createFuncao, deleteFuncao, exportFuncoesExcel } from '../services/funcoesService';
-import './funcoes.css'; // Importa o novo CSS específico
+import BackButton from '../components/BackButton'; // ADICIONAR ESTA LINHA
+import './funcoes.css';
 
 export default function Funcoes() {
   const [funcoes, setFuncoes] = useState([]);
@@ -92,6 +93,8 @@ export default function Funcoes() {
 
   return (
     <div className="page-container">
+      <BackButton /> {/* ADICIONAR ESTA LINHA */}
+      
       <div className="page-header">
         <h1>Gerenciamento de Funções</h1>
       </div>

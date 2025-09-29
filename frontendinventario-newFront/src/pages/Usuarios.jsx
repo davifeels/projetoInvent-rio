@@ -8,6 +8,7 @@ import {
   rejeitarUsuario 
 } from '../services/usuariosService';
 import { useAuth } from '../context/AuthContext';
+import BackButton from '../components/BackButton';
 import './usuarios.css';
 
 export default function Usuarios() {
@@ -115,6 +116,8 @@ export default function Usuarios() {
 
   return (
     <div className="usuarios-container">
+      <BackButton />
+      
       <div className="usuarios-header">
         <h2>Gerenciamento de Usuários</h2>
         <div className="header-buttons">

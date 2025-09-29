@@ -18,27 +18,31 @@ body {
   width: 100%;
   min-height: 100vh;
   padding: 4rem 5rem;
-  background-color: #ffffff;
+  padding-top: 80px;
+  background-color: #f4f6f9;
 }
 
-/* 3. Cabeçalho da Página */
+/* 3. Cabeçalho da Página - CENTRALIZADO E ESCURO */
 .auditoria-header {
   margin-bottom: 2.5rem;
+  text-align: center;
 }
 
 .auditoria-header h2 {
   font-size: 2.5rem;
-  color: #174db2;
+  color: #1a202c;
   margin: 0;
+  font-weight: 700;
 }
 
-/* 4. Painel de Exportação */
+/* 4. Painel de Exportação - FUNDO BRANCO */
 .export-panel {
-  background-color: #f8fafc;
+  background-color: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 .export-panel h3 {
@@ -48,10 +52,10 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* Refatorado para usar flexbox e garantir alinhamento */
+/* Form com alinhamento correto - CORRIGIDO */
 .export-form {
   display: flex;
-  align-items: center; /* ALINHA TODOS OS ITENS VERTICALMENTE */
+  align-items: flex-end;
   gap: 1.5rem;
   flex-wrap: wrap;
 }
@@ -59,6 +63,7 @@ body {
 .export-form .form-group {
   display: flex;
   flex-direction: column;
+  flex: 0 0 auto;
 }
 
 .export-form label {
@@ -74,18 +79,22 @@ body {
   border-radius: 6px;
   font-size: 1rem;
   font-family: 'Inter', sans-serif;
+  min-width: 180px;
 }
 
 .btn-export {
   background-color: #1D6F42;
   color: white;
   border: none;
-  padding: 0.8rem 1.8rem; /* Diminui o padding horizontal e vertical */
+  padding: 0.8rem 1.8rem;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
   transition: 0.2s ease;
   width: auto;
+  box-shadow: 0 4px 6px rgba(29, 111, 66, 0.3);
+  white-space: nowrap;
+  height: fit-content;
 }
 
 .btn-export:disabled {
@@ -94,6 +103,8 @@ body {
 }
 .btn-export:hover:not(:disabled) {
   background-color: #165934;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(29, 111, 66, 0.4);
 }
 
 .export-error {
@@ -176,4 +187,33 @@ body {
 .status-message.error {
   background-color: #fef2f2;
   color: #dc2626;
+}
+
+/* 8. Responsividade */
+@media (max-width: 768px) {
+  .auditoria-container {
+    padding: 2rem 1.5rem;
+    padding-top: 80px;
+  }
+  
+  .auditoria-header h2 {
+    font-size: 2rem;
+  }
+  
+  .export-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .export-form .form-group {
+    width: 100%;
+  }
+  
+  .export-form input[type="date"] {
+    width: 100%;
+  }
+  
+  .btn-export {
+    width: 100%;
+  }
 }

@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
-// ✅ CORREÇÃO: Caminhos ajustados para o padrão do projeto.
-import api from '../api/axios'; // Sai da pasta 'pages' e entra na 'api'
-import { exportAuditoriaExcel } from '../services/auditoriaService'; // Sai da pasta 'pages' e entra na 'services'
-import './auditoria.css'; // Estilo específico da página
+import { useNavigate } from 'react-router-dom';
+import api from '../api/axios';
+import { exportAuditoriaExcel } from '../services/auditoriaService';
+import BackButton from '../components/BackButton';
+import './auditoria.css';
 
-// Componente auxiliar para formatar os detalhes (sem alterações)
 function DetalhesFormatados({ detalhesJson }) {
   if (!detalhesJson) {
     return <span>-</span>;
@@ -19,7 +19,6 @@ function DetalhesFormatados({ detalhesJson }) {
     ip: "Endereço IP",
     filtros_aplicados: "Filtros Aplicados",
     erro: "Detalhe Técnico do Erro",
-    // ... outros mapeamentos
   };
   return (
     <div className="detalhes-container">
@@ -39,13 +38,10 @@ function DetalhesFormatados({ detalhesJson }) {
   );
 }
 
-// Componente principal da página de Auditoria
 export default function Auditoria() {
   const [auditorias, setAuditorias] = useState([]);
   const [erro, setErro] = useState('');
   const [loading, setLoading] = useState(true);
-
-  // --- Estados para a nova funcionalidade de exportação ---
   const [dataInicio, setDataInicio] = useState('');
   const [dataFim, setDataFim] = useState('');
   const [exporting, setExporting] = useState(false);
@@ -69,7 +65,6 @@ export default function Auditoria() {
     fetchAuditoria();
   }, [fetchAuditoria]);
 
-  // --- Função para lidar com a exportação ---
   const handleExport = async (e) => {
     e.preventDefault();
     setExportError('');
@@ -102,14 +97,14 @@ export default function Auditoria() {
     }
   };
 
-
   return (
     <div className="auditoria-container">
+      <BackButton />
+      
       <div className="auditoria-header">
         <h2>Log de Auditoria do Sistema</h2>
       </div>
 
-      {/* --- Seção de Exportação --- */}
       <div className="export-panel">
         <h3>Exportar Relatório</h3>
         <form onSubmit={handleExport} className="export-form">
@@ -139,7 +134,6 @@ export default function Auditoria() {
         </form>
         {exportError && <p className="status-message error export-error">{exportError}</p>}
       </div>
-
 
       {loading && <p className="status-message">Carregando auditoria...</p>}
       {erro && !loading && <p className="status-message error">{erro}</p>}

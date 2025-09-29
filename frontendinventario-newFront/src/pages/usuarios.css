@@ -17,10 +17,12 @@ body {
   max-width: 12000px;
   margin: 0 auto;
   padding: 2rem;
+  padding-top: 2rem; /* MUDANÇA: Remove o padding-top de 80px */
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-top: 2rem;
+  position: relative; /* ADICIONA: Para o botão voltar ficar posicionado em relação a este container */
 }
 
 /* Título */

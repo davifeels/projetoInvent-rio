@@ -29,7 +29,7 @@ export default function Dashboard() {
   }
 
   let visibleCards = [];
-  let welcomeMessage = "Inventario de Tratamento de Dados Pessoais";
+  let welcomeMessage = "Inventário de Tratamento de Dados Pessoais";
   let showLimitedAccessMessage = false;
 
   if (usuario.status === 'ativo_inventario_pendente') {

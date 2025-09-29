@@ -4,6 +4,7 @@ import { fetchUsuarioPorId, updateUsuario } from '../services/usuariosService';
 import { fetchSetores } from '../services/setoresService';
 import { fetchFuncoes } from '../services/funcoesService';
 import { useAuth } from '../context/AuthContext';
+import BackButton from '../components/BackButton';
 import './EditarUsuario.css';
 
 export default function EditarUsuario() {
@@ -14,7 +15,6 @@ export default function EditarUsuario() {
   const [formData, setFormData] = useState({
     nome: '', email: '', perfil_id: '', setor_id: '', funcao_id: '', status: ''
   });
-  // NOVO ESTADO: para a senha opcional
   const [novaSenha, setNovaSenha] = useState('');
 
   const [setores, setSetores] = useState([]);
@@ -24,7 +24,6 @@ export default function EditarUsuario() {
   const [feedback, setFeedback] = useState({ erro: '', sucesso: '' });
 
   const carregarDados = useCallback(async () => {
-    // ... (lógica de carregamento de dados permanece a mesma)
     try {
       const [resUsuario, resSetores, resFuncoes] = await Promise.all([
         fetchUsuarioPorId(id),
@@ -69,7 +68,6 @@ export default function EditarUsuario() {
       status: formData.status,
     };
 
-    // ADICIONADO: Envia a nova senha apenas se o campo for preenchido
     if (novaSenha.trim() !== '') {
       if (novaSenha.trim().length < 6) {
         setFeedback({ erro: 'A nova senha deve ter no mínimo 6 caracteres.', sucesso: '' });
@@ -91,10 +89,12 @@ export default function EditarUsuario() {
     }
   };
 
-  if (loading) return <div className="editar-usuario-container">Carregando...</div>;
+  if (loading) return <div className="editar-usuario-container"><BackButton /><p>Carregando...</p></div>;
 
   return (
     <div className="editar-usuario-container">
+      <BackButton />
+      
       <h2>Editar Usuário</h2>
       {feedback.erro && <p className="feedback-message error-message">{feedback.erro}</p>}
       {feedback.sucesso && <p className="feedback-message success-message">{feedback.sucesso}</p>}
@@ -109,7 +109,6 @@ export default function EditarUsuario() {
           <input id="email" name="email" type="email" value={formData.email} onChange={handleChange} required />
         </div>
 
-        {/* NOVO CAMPO DE SENHA */}
         <div className="form-group">
           <label htmlFor="novaSenha">Nova Senha (opcional)</label>
           <input id="novaSenha" name="novaSenha" type="password" placeholder="Deixe em branco para não alterar" value={novaSenha} onChange={(e) => setNovaSenha(e.target.value)} />

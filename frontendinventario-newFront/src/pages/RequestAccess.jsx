@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { fetchSetores } from '../services/setoresService';
 import { fetchFuncoes } from '../services/funcoesService';
 import api from '../api/axios';
-// ✅ CORREÇÃO CONFIRMADA: Caminho do CSS é relativo à pasta Pages (onde RequestAccess.jsx está).
 import './RequestAccess.css'; 
 
 export default function RequestAccess() {
@@ -20,12 +19,9 @@ export default function RequestAccess() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Função para carregar os dados dos dropdowns (Setores e Funções)
   const loadDropdownData = useCallback(async () => {
-    setFeedback({ erro: '', sucesso: '' }); // Limpa feedbacks anteriores ao carregar
+    setFeedback({ erro: '', sucesso: '' });
     try {
-      // ✅ Certifique-se de que o backend está configurado para que estas rotas sejam públicas.
-      // (Já verificamos isso e o server.js foi ajustado).
       const resSetores = await fetchSetores();
       setSetores(resSetores.data);
       const resFuncoes = await fetchFuncoes();
@@ -47,13 +43,12 @@ export default function RequestAccess() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setFeedback({ erro: '', sucesso: '' }); // Limpa feedback antes de submeter
+    setFeedback({ erro: '', sucesso: '' });
 
     try {
-      // ROTA CORRIGIDA: /auth/solicitar-acesso (em português, conforme backend)
       const res = await api.post('/auth/solicitar-acesso', formData);
       setFeedback({ sucesso: res.data.message, erro: '' });
-      setTimeout(() => navigate('/login'), 3000); // Redireciona após 3 segundos
+      setTimeout(() => navigate('/login'), 3000);
     } catch (err) {
       console.error("Erro ao enviar solicitação de acesso:", err);
       setFeedback({ erro: err.response?.data?.message || 'Falha ao enviar solicitação. Verifique os dados e tente novamente.', sucesso: '' });

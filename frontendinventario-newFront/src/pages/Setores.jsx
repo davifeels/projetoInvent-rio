@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { fetchSetores, createSetor, deleteSetor } from '../services/setoresService';
 import { useNavigate } from 'react-router-dom';
 import * as XLSX from 'xlsx';
+import BackButton from '../components/BackButton';
 import './setores.css';
 
 export default function Setores() {
@@ -83,6 +84,8 @@ export default function Setores() {
 
   return (
     <div className="page-container">
+      <BackButton />
+      
       <header className="page-header">
         <h1>Gerenciamento de Setores</h1>
         <button onClick={handleLogout} className="btn-logout">Sair</button>
@@ -121,7 +124,6 @@ export default function Setores() {
                 />
               </div>
               <div className="form-buttons">
-                {/* O botão de exportar foi MOVIDO PARA CÁ, dentro do mesmo container de botões */}
                 <button type="submit" className="btn-primary">
                   Adicionar Setor
                 </button>

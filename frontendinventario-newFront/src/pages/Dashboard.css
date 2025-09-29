@@ -15,7 +15,7 @@
   --card-border-radius: 12px;
   --card-shadow: rgba(0, 0, 0, 0.06);
   --card-shadow-hover: rgba(0, 0, 0, 0.12);
-  --card-icon-color: #3498db; /* Cor padrão azul */
+  --card-icon-color: #3498db;
   --card-title-color: #2c3e50;
 
   --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -24,10 +24,10 @@
 
   --loading-text-color: #555;
 
-  --master-card-icon-color: #20c997; /* Verde para Master */
+  --master-card-icon-color: #20c997;
 
-  --card-gap: 2rem; /* Aumenta o espaçamento entre cards para cards maiores */
-  --dashboard-padding-x: 3.5rem; /* Aumenta o padding lateral geral do dashboard para mais respiro */
+  --card-gap: 2rem;
+  --dashboard-padding-x: 3.5rem;
 }
 
 body {
@@ -59,7 +59,7 @@ body {
   align-items: center;
   width: 100%;
   background-color: var(--header-bg);
-  padding: 1.5rem var(--dashboard-padding-x); /* Usa padding lateral do dashboard */
+  padding: 1.5rem var(--dashboard-padding-x);
   box-sizing: border-box;
   border-bottom: 1px solid var(--header-border-color);
   flex-wrap: wrap; 
@@ -75,40 +75,41 @@ body {
 }
 
 .header-title {
-  font-size: 2rem; /* Aumenta o tamanho do título do header */
+  font-size: 2rem;
   font-weight: 700;
   color: var(--header-text);
   margin: 0;
   text-align: center;
-  flex: 2; 
-  min-width: 200px; 
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
 }
 
 .header-user-info {
   display: flex;
   align-items: center;
-  gap: 1.5rem; /* Aumenta o espaçamento */
-  flex: 1;
-  justify-content: flex-end;
+  gap: 1.5rem;
+  margin-left: auto;
   min-width: 180px; 
 }
 
 .user-greeting {
   margin: 0;
   color: var(--greeting-text-color);
-  font-size: 1.1rem; /* Aumenta a fonte da saudação */
+  font-size: 1.1rem;
   font-weight: 600;
   white-space: nowrap;
 }
 
 .logout-button {
-  padding: 0.7rem 1.4rem; /* Aumenta o padding do botão */
+  padding: 0.7rem 1.4rem;
   background-color: var(--logout-bg);
   color: var(--logout-text-color);
   border: none;
-  border-radius: 8px; /* Mais arredondado */
+  border-radius: 8px;
   font-weight: 600;
-  font-size: 0.95rem; /* Aumenta a fonte do botão */
+  font-size: 0.95rem;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
@@ -125,54 +126,61 @@ body {
 
 .card-grid-scroll-container {
   width: 100%;
-  overflow-x: hidden; /* Garante que não haja rolagem horizontal */
+  overflow-x: hidden;
   box-sizing: border-box;
   flex-grow: 1; 
   display: flex;
-  justify-content: center; /* Centraliza a grade */
+  justify-content: center;
   align-items: flex-start;
-  padding-top: 2.5rem; /* Aumenta padding-top */
-  padding-bottom: 3.5rem; /* Aumenta padding-bottom */
-  padding-left: var(--dashboard-padding-x); /* Padding lateral do Dashboard */
-  padding-right: var(--dashboard-padding-x); /* Padding lateral do Dashboard */
+  padding-top: 2.5rem;
+  padding-bottom: 3.5rem;
+  padding-left: var(--dashboard-padding-x);
+  padding-right: var(--dashboard-padding-x);
 }
 
 .card-grid {
   display: grid;
-  /* CHAVE: Aumenta o minmax para cards maiores. Tenta 2-3 colunas. */
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-  gap: var(--card-gap); /* Espaçamento entre os cards */
+  gap: var(--card-gap);
   width: 100%; 
-  max-width: 1400px; /* Limita a largura máxima da grade */
+  max-width: 1400px;
   padding: 0;
   margin: 0; 
 }
 
+/* CORREÇÃO: Card único agora usa o grid normalmente, mas com largura máxima */
+.card-grid.single-item {
+  /* Remove o display: flex que estava quebrando o layout */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  max-width: 400px; /* Limita a largura máxima do grid quando há apenas 1 card */
+}
+
 .card {
   background: var(--card-bg);
-  border-radius: 16px; /* Bordas mais arredondadas para cards maiores */
-  padding: 2.5rem 1.5rem; /* Aumenta o padding interno do card */
+  border-radius: 16px;
+  padding: 2.5rem 1.5rem;
   text-align: center;
   cursor: pointer;
-  box-shadow: 0 5px 20px var(--card-shadow); /* Sombra mais pronunciada */
+  box-shadow: 0 5px 20px var(--card-shadow);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
-  min-height: 200px; /* Aumenta a altura mínima do card */
+  min-height: 200px;
+  /* IMPORTANTE: Remove qualquer max-width do card */
+  width: 100%; /* Garante que o card preencha o espaço disponível */
 }
 
 .card:hover {
-  transform: translateY(-8px) scale(1.02); /* Efeito de "levantar" mais pronunciado */
-  box-shadow: 0 15px 40px var(--card-shadow-hover); /* Sombra maior no hover */
-  z-index: 1; /* Garante que o card em hover fique acima */
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 40px var(--card-shadow-hover);
+  z-index: 1;
 }
 
 .card-icon {
-  font-size: 3.5rem; /* Aumenta o tamanho do ícone */
-  margin-bottom: 1.5rem; /* Mais espaço abaixo do ícone */
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
   color: var(--card-icon-color);
 }
 
@@ -181,8 +189,8 @@ body {
 }
 
 .card .card-title-text { 
-  font-size: 1.3rem; /* Aumenta o tamanho do título do card */
-  font-weight: 700; /* Mais negrito */
+  font-size: 1.3rem;
+  font-weight: 700;
   color: var(--card-title-color);
   margin: 0;
 }
@@ -190,20 +198,20 @@ body {
 .no-functionality-message,
 .loading-container { 
   text-align: center;
-  font-size: 1.2rem; /* Fonte maior */
+  font-size: 1.2rem;
   color: var(--text-color-muted);
   width: 100%; 
   height: 100%; 
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 250px; /* Aumenta a altura mínima */
+  min-height: 250px;
   background-color: var(--header-bg); 
   border-radius: var(--card-border-radius); 
-  box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Sombra mais visível */
-  max-width: 900px; /* Aumenta largura máxima */
-  margin: 3rem auto; /* Mais margem */
-  padding: 3rem; /* Mais padding */
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  max-width: 900px;
+  margin: 3rem auto;
+  padding: 3rem;
 }
 
 .no-cards-message {
@@ -222,39 +230,45 @@ body {
 
 .welcome-message {
     text-align: center;
-    padding: 1.5rem; /* Aumenta padding */
+    padding: 1.5rem;
     background-color: #ffe0b2; 
     color: #e65100; 
     border: 1px solid #ffcc80;
-    border-radius: 10px; /* Mais arredondado */
-    margin: 2rem auto; /* Mais margem */
-    max-width: 900px; /* Aumenta largura máxima */
-    font-size: 1.1rem; /* Fonte maior */
-    line-height: 1.6; /* Mais espaçamento de linha */
-    box-shadow: 0 3px 8px rgba(0,0,0,0.08); /* Sombra mais visível */
+    border-radius: 10px;
+    margin: 2rem auto;
+    max-width: 900px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
 }
 
 
 /* --- Responsividade --- */
-@media (max-width: 1400px) { /* Para monitores um pouco menores */
+@media (max-width: 1400px) {
     .card-grid {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Tenta 3-4 colunas */
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+    .card-grid.single-item {
+        max-width: 380px;
     }
 }
 
-@media (max-width: 1200px) { /* Laptops e telas grandes */
+@media (max-width: 1200px) {
     .header {
         padding: 1.5rem 2.5rem;
     }
     .card-grid-scroll-container {
-        padding: 2rem 2.5rem; /* Ajusta padding para telas menores */
+        padding: 2rem 2.5rem;
     }
     .card-grid {
-        gap: 1.5rem; /* Espaçamento menor */
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Mais compacto */
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+    .card-grid.single-item {
+        max-width: 350px;
     }
     .card {
-      min-height: 180px; /* Ajusta altura */
+      min-height: 180px;
       padding: 2rem 1.2rem;
     }
     .card-icon {
@@ -266,7 +280,7 @@ body {
     }
 }
 
-@media (max-width: 992px) { /* Tablets grandes */
+@media (max-width: 992px) {
     .header-title {
         font-size: 1.8rem;
     }
@@ -284,7 +298,10 @@ body {
     }
     .card-grid {
         gap: 1.2rem;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Força 2-3 colunas */
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .card-grid.single-item {
+        max-width: 320px;
     }
     .card {
         min-height: 160px;
@@ -299,7 +316,7 @@ body {
     }
 }
 
-@media (max-width: 768px) { /* Tablets e celulares */
+@media (max-width: 768px) {
     .header {
         flex-direction: column;
         align-items: center;
@@ -325,14 +342,17 @@ body {
     }
 
     .card-grid-scroll-container {
-        padding: 1rem 1.5rem; /* Padding reduzido para mobile */
+        padding: 1rem 1.5rem;
     }
     .card-grid {
         gap: 1rem;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Ajusta para 2-3 cards */
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+    .card-grid.single-item {
+        max-width: 280px;
     }
     .card {
-        min-height: 140px; /* Altura menor */
+        min-height: 140px;
         padding: 1.5rem 0.8rem;
     }
     .card-icon {
@@ -354,7 +374,7 @@ body {
     }
 }
 
-@media (max-width: 480px) { /* Celulares muito pequenos */
+@media (max-width: 480px) {
     .header {
         padding: 0.8rem;
     }
@@ -369,11 +389,14 @@ body {
         padding: 0.5rem 0.8rem;
     }
     .card-grid-scroll-container {
-        padding: 0.8rem 1rem; /* Padding mínimo em telas muito pequenas */
+        padding: 0.8rem 1rem;
     }
     .card-grid {
         gap: 0.8rem;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Ajusta para 2 cards ou 1 por linha */
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    .card-grid.single-item {
+        max-width: 200px;
     }
     .card {
         padding: 1rem 0.5rem;
