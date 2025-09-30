@@ -1,4 +1,5 @@
 import React from 'react';
+import BackButton from '../components/BackButton';
 import './MeuInventarioDisplay.css'; // O novo CSS será aplicado aqui
 
 // Este componente recebe os dados do inventário e funções para as ações

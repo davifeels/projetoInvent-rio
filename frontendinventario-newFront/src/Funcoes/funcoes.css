@@ -44,7 +44,7 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--cor-fundo-pag
 
 .page-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 3rem;
   flex-wrap: wrap;
@@ -56,6 +56,9 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--cor-fundo-pag
   font-weight: 700;
   color: var(--cor-texto-titulo);
   margin: 0;
+  text-align: center;
+  width: 100%;
+  text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .btn-logout {

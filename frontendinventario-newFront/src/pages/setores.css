@@ -38,7 +38,7 @@ html, body, #root {
 /* Cabeçalho */
 .page-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 3rem;
   padding-bottom: 20px;
@@ -51,6 +51,9 @@ html, body, #root {
   font-weight: 700;
   font-size: 2.5rem;
   color: #222;
+  text-align: center;
+  width: 100%;
+  text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Botão de sair no header */

@@ -12,14 +12,13 @@ export default function Dashboard() {
   const PROFILE_NORMAL_ID = 3;
 
   const allCards = [
-    { title: 'Inventário Geral', icon: '📦', path: '/inventario', allowed: [PROFILE_MASTER_ID, PROFILE_GESTOR_ID] },
-    { title: 'Gerenciar Usuários', icon: '👥', path: '/usuarios', allowed: [PROFILE_MASTER_ID, PROFILE_GESTOR_ID] },
-    { title: 'Gerenciar Setores', icon: '🏢', path: '/setores', allowed: [PROFILE_MASTER_ID] },
-    { title: 'Auditoria do Sistema', icon: '📋', path: '/auditoria', allowed: [PROFILE_MASTER_ID, PROFILE_GESTOR_ID] },
-    { title: 'Meu Inventário Pessoal', icon: '📝', path: '/meu-inventario', allowed: [PROFILE_MASTER_ID, PROFILE_GESTOR_ID, PROFILE_NORMAL_ID] },
-    { title: 'Gerenciar Funções', icon: '🏷️', path: '/funcoes', allowed: [PROFILE_MASTER_ID] },
-    { title: 'Relatórios Master', icon: '📈', path: '/admin/inventarios', allowed: [PROFILE_MASTER_ID] },
-  ];
+  { title: 'Gerenciar Usuários', icon: '👥', path: '/usuarios', allowed: [PROFILE_MASTER_ID, PROFILE_GESTOR_ID] },
+  { title: 'Gerenciar Setores', icon: '🏢', path: '/setores', allowed: [PROFILE_MASTER_ID] },
+  { title: 'Auditoria do Sistema', icon: '📋', path: '/auditoria', allowed: [PROFILE_MASTER_ID, PROFILE_GESTOR_ID] },
+  { title: 'Meu Inventário Pessoal', icon: '📝', path: '/meu-inventario', allowed: [PROFILE_MASTER_ID, PROFILE_GESTOR_ID, PROFILE_NORMAL_ID] },
+  { title: 'Gerenciar Funções', icon: '🏷️', path: '/funcoes', allowed: [PROFILE_MASTER_ID] },
+  { title: 'Relatórios Master', icon: '📈', path: '/admin/inventarios', allowed: [PROFILE_MASTER_ID] },
+];
 
   if (loading) {
     return <div className="loading-container">A carregar...</div>;
@@ -44,8 +43,6 @@ export default function Dashboard() {
 
   return (
     <>
-      {/* O BLOCO DA "CAIXA DE TESTE" FOI REMOVIDO DAQUI */}
-
       <div className="dashboard-wrapper">
         <main className="main-content">
           <header className="header">

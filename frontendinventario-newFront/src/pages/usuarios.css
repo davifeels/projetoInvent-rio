@@ -17,12 +17,12 @@ body {
   max-width: 12000px;
   margin: 0 auto;
   padding: 2rem;
-  padding-top: 2rem; /* MUDANÇA: Remove o padding-top de 80px */
+  padding-top: 2rem;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-top: 2rem;
-  position: relative; /* ADICIONA: Para o botão voltar ficar posicionado em relação a este container */
+  position: relative;
 }
 
 /* Título */
@@ -35,19 +35,31 @@ body {
   font-size: 1.8rem;
 }
 
-/* Estilos para o cabeçalho com botões */
+/* Estilos para o cabeçalho com botões - CORRIGIDO */
 .usuarios-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 2rem;
   flex-wrap: wrap;
   gap: 1rem;
+  position: relative;
+  min-height: 60px;
+}
+
+.usuarios-header h2 {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  border: none;
+  padding: 0;
 }
 
 .header-buttons {
   display: flex;
   gap: 1rem;
+  margin-left: auto;
 }
 
 .btn-export,
@@ -191,7 +203,6 @@ body {
   background-color: #c82333;
 }
 
-/* NOVOS ESTILOS PARA APROVAR E REJEITAR */
 .btn-approve {
     background-color: #28a745;
     color: white;

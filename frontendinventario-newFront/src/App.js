@@ -10,13 +10,10 @@ import Dashboard from './pages/Dashboard';
 import Usuarios from './pages/Usuarios';
 import CadastroUsuario from './pages/CadastroUsuario';
 import EditarUsuario from './pages/EditarUsuario';
-// import Cadastros from './pages/Cadastros'; // Removido
 import Setores from './pages/Setores';
 import Funcoes from './Funcoes/Funcoes';
 import Auditoria from './pages/Auditoria';
 import InventarioPessoal from './pages/InventarioPessoal';
-import InventarioList from './pages/InventarioList';
-import CadastroInventario from './pages/CadastroInventario';
 import InventarioMasterView from './pages/InventarioMasterView';
 
 import PrivateRoute from './components/PrivateRoute';
@@ -105,22 +102,6 @@ export default function App() {
       />
 
       {/* --- Gestão de Inventário --- */}
-      <Route
-        path="/inventario"
-        element={
-          <PrivateRoute allowedProfiles={[PROFILE_MASTER_ID, PROFILE_GESTOR_ID]}>
-            <InventarioList />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/inventario/cadastrar"
-        element={
-          <PrivateRoute allowedProfiles={[PROFILE_MASTER_ID, PROFILE_GESTOR_ID]}>
-            <CadastroInventario />
-          </PrivateRoute>
-        }
-      />
       <Route
         path="/meu-inventario"
         element={

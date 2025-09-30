@@ -67,10 +67,6 @@ export default function Setores() {
     }
   };
 
-  const handleLogout = () => {
-    navigate('/dashboard');
-  };
-
   const handleExportExcel = () => {
     setExporting(true);
     const ws = XLSX.utils.json_to_sheet(setores);
@@ -88,7 +84,6 @@ export default function Setores() {
       
       <header className="page-header">
         <h1>Gerenciamento de Setores</h1>
-        <button onClick={handleLogout} className="btn-logout">Sair</button>
       </header>
 
       {sucesso && <p className="message success">{sucesso}</p>}

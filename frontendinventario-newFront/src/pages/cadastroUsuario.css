@@ -1,6 +1,3 @@
-/* ================================================= */
-/* Estilo de tela cheia para a página de Cadastro de Usuário */
-/* ================================================= */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 body {
@@ -11,20 +8,19 @@ body {
   margin: 0;
 }
 
-/* Container principal que ocupa a tela toda */
 .form-container {
   min-height: 100vh;
   width: 100%;
   padding: 2rem;
   box-sizing: border-box;
-  background-color: #ffffff; /* Fundo branco para a área principal */
-  box-shadow: none; /* Remove a sombra de card */
-  border-radius: 0; /* Remove o border-radius */
+  background-color: #ffffff;
+  box-shadow: none;
+  border-radius: 0;
 }
 
-/* Título e subtítulo */
+/* CABEÇALHO CENTRALIZADO - CORRIGIDO */
 .form-header {
-  text-align: left; /* Alinha o texto à esquerda */
+  text-align: center;
   margin-bottom: 2rem;
 }
 
@@ -40,7 +36,6 @@ body {
   color: #64748b;
 }
 
-/* Layout em grid para os campos de formulário */
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -57,7 +52,7 @@ body {
   font-weight: 500;
   color: #64748b;
   margin-bottom: 0.5rem;
-  display: block; /* Garante que o label ocupe toda a linha */
+  display: block;
 }
 
 .form-group input,
@@ -79,7 +74,6 @@ body {
   background-color: #ffffff;
 }
 
-/* Estilo para inputs desabilitados */
 .input-disabled {
   background-color: #e2e8f0;
   color: #64748b;
@@ -132,7 +126,6 @@ body {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
-/* Mensagens de Feedback */
 .message {
   padding: 1rem 1.5rem;
   margin-bottom: 1.5rem;
@@ -154,7 +147,6 @@ body {
   border: 1px solid #bbf7d0;
 }
 
-/* Responsividade */
 @media (max-width: 768px) {
   .form-container {
     padding: 1rem;

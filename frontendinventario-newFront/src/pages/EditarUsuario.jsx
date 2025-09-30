@@ -32,13 +32,34 @@ export default function EditarUsuario() {
       ]);
       const usuario = resUsuario.data;
       setFormData({
-        nome: usuario.nome, email: usuario.email, perfil_id: usuario.perfil_id.toString(),
-        setor_id: usuario.setor_id.toString(), funcao_id: usuario.funcao_id.toString(), status: usuario.status
+        nome: usuario.nome, 
+        email: usuario.email, 
+        perfil_id: usuario.perfil_id.toString(),
+        setor_id: usuario.setor_id.toString(), 
+        funcao_id: usuario.funcao_id.toString(), 
+        status: usuario.status
       });
       setSetores(resSetores.data);
       setFuncoes(resFuncoes.data);
-      const perfisDisponiveis = [{ id: "1", nome: "Master" }, { id: "2", nome: "Coordenador" }, { id: "3", nome: "Usuário" }];
-      if (usuarioLogado?.perfil_id === 1) { setPerfis(perfisDisponiveis); } else { setPerfis(perfisDisponiveis.filter(p => p.id !== "1")); }
+
+      const perfisDisponiveis = [
+        { id: "1", nome: "Master" }, 
+        { id: "2", nome: "Coordenador" }, 
+        { id: "3", nome: "Usuário" }
+      ];
+
+      // ✅ CORREÇÃO APLICADA AQUI
+      if (usuarioLogado?.perfil_id === 1) { 
+        // Master pode editar para Coordenador ou Usuário (mas não para Master)
+        setPerfis(perfisDisponiveis.filter(p => p.id === "2" || p.id === "3")); 
+      } else if (usuarioLogado?.perfil_id === 2) { 
+        // Coordenador só pode editar para Usuário
+        setPerfis(perfisDisponiveis.filter(p => p.id === "3")); 
+      } else {
+        // Usuário comum não edita ninguém (não deveria chegar aqui)
+        setPerfis([]);
+      }
+
     } catch (err) {
       setFeedback({ erro: 'Falha ao carregar os dados para edição.', sucesso: '' });
     } finally {
