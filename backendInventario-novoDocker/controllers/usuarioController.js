@@ -7,7 +7,7 @@
  */
 const db = require('../config/db');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken'); // Pode ser removido se 'login' for o único lugar que o usa aqui
+const jwt = require('jsonwebtoken');
 const { registrarAuditoria } = require('./auditoriaController');
 const transporter = require('../config/mailer');
 const ExcelJS = require('exceljs');
@@ -84,10 +84,16 @@ function construirQueryListagem(filtros, perfilExecutor) {
     const params = [];
     let whereClauses = [];
 
+    // ✅ CORREÇÃO: Coordenador só vê usuários do próprio setor E NUNCA O MASTER
     if (perfilExecutor.perfil_id === 2) {
         whereClauses.push(`u.setor_id = ?`);
         params.push(perfilExecutor.setor_id);
+        // CRÍTICO: Coordenador NUNCA vê o Master
+        whereClauses.push(`u.perfil_id != 1`);
     }
+    
+    // Master vê todos (sem filtro adicional)
+
     if (filtros.termo_busca) {
         const termo = `%${filtros.termo_busca}%`;
         whereClauses.push(`(u.nome LIKE ? OR u.email LIKE ? OR s.sigla LIKE ?)`);
@@ -160,6 +166,12 @@ const buscarUsuarioPorId = async (req, res) => {
         const [[usuario]] = await db.query(query, [idBuscado]);
         if (!usuario) return res.status(404).json({ message: 'Usuário não encontrado.' });
         
+        // ✅ PROTEÇÃO: Coordenador não pode visualizar Master
+        if (perfilIdExecutor === 2 && usuario.perfil_id === 1) {
+            await registrarAuditoria(usuarioIdExecutor, 'TENTATIVA_VISUALIZAR_MASTER_NEGADA', setorIdExecutor, { usuario_buscado_id: idBuscado, ip: req.ip });
+            return res.status(403).json({ message: 'Acesso negado.' });
+        }
+
         if (perfilIdExecutor === 2 && usuario.setor_id !== setorIdExecutor) {
             await registrarAuditoria(usuarioIdExecutor, 'USUARIO_BUSCA_NEGADA_OUTRO_SETOR', setorIdExecutor, { usuario_buscado_id: idBuscado, ip: req.ip });
             return res.status(403).json({ message: 'Acesso negado. Coordenadores só podem visualizar usuários do seu setor.' });
@@ -211,9 +223,19 @@ const atualizarUsuario = async (req, res) => {
         const [[usuarioAntigo]] = await db.query('SELECT * FROM usuarios WHERE id = ?', [usuarioIdParaAtualizar]);
         if (!usuarioAntigo) return res.status(404).json({ message: 'Usuário a ser atualizado não encontrado.' });
         
+        // ✅ PROTEÇÃO 1: Coordenador não pode editar usuários de outro setor
         if (quemAtualiza.perfil_id === 2 && usuarioAntigo.setor_id !== quemAtualiza.setor_id) {
             await registrarAuditoria(quemAtualiza.id, 'TENTATIVA_ATUALIZAR_USUARIO_OUTRO_SETOR', quemAtualiza.setor_id, { ip: req.ip });
             return res.status(403).json({ message: 'Coordenadores só podem editar usuários do seu próprio setor.' });
+        }
+
+        // ✅ PROTEÇÃO 2: Coordenador NÃO pode editar o Master
+        if (quemAtualiza.perfil_id === 2 && usuarioAntigo.perfil_id === 1) {
+            await registrarAuditoria(quemAtualiza.id, 'TENTATIVA_EDITAR_MASTER_NEGADA', quemAtualiza.setor_id, { 
+                usuario_alvo_id: usuarioIdParaAtualizar, 
+                ip: req.ip 
+            });
+            return res.status(403).json({ message: 'Coordenadores não têm permissão para editar administradores Master.' });
         }
 
         const camposParaAtualizar = {};
@@ -265,7 +287,7 @@ const excluirUsuario = async (req, res) => {
         const [[usuarioParaExcluir]] = await db.query('SELECT * FROM usuarios WHERE id = ?', [usuarioIdParaExcluir]);
         if (!usuarioParaExcluir) return res.status(404).json({ message: 'Usuário não encontrado.' });
         
-        if (quemExclui.perfil_id !== 1) { // Apenas Master pode excluir
+        if (quemExclui.perfil_id !== 1) {
             return res.status(403).json({ message: 'Apenas administradores podem excluir usuários.' });
         }
         
@@ -333,7 +355,6 @@ const aprovarUsuario = async (req, res) => {
             return res.status(403).json({ message: 'Coordenadores só podem aprovar usuários do seu próprio setor.' });
         }
         
-        // CORREÇÃO DA REGRA DE NEGÓCIO: Ao aprovar, o status muda para 'ativo_inventario_pendente'
         const novoStatus = 'ativo_inventario_pendente';
         await db.execute('UPDATE usuarios SET status = ?, updatedAt = NOW() WHERE id = ?', [novoStatus, usuarioIdParaAprovar]);
         
@@ -344,7 +365,6 @@ const aprovarUsuario = async (req, res) => {
                 from: `"Sistema de Cadastro" <${process.env.MAIL_USER}>`,
                 to: usuario.email,
                 subject: 'Seu cadastro foi aprovado!',
-                // Mensagem do email atualizada para refletir a necessidade de preencher o inventário
                 html: `<p>Olá ${usuario.nome},</p><p>Seu cadastro foi <strong>aprovado</strong>. Para ativar completamente seu acesso, por favor, faça o login e preencha o seu Inventário de Dados Pessoais.</p>`
             });
         }

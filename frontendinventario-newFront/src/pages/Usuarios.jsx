@@ -27,6 +27,7 @@ export default function Usuarios() {
       const res = await fetchUsuarios();
       let listaUsuarios = res.data;
 
+      // ✅ FILTRO ADICIONADO: Coordenador não vê Master
       if (usuarioLogado?.perfil_id === 2) {
         listaUsuarios = listaUsuarios.filter(u => u.perfil_id !== 1);
       }
@@ -120,7 +121,9 @@ export default function Usuarios() {
     }
   };
 
+  // ✅ FUNÇÃO AUXILIAR: Verifica se deve mostrar ações
   const podeInteragirComUsuario = (user) => {
+    // Coordenador não pode interagir com Master (mas o backend já bloqueia também)
     if (usuarioLogado?.perfil_id === 2 && user.perfil_id === 1) {
       return false;
     }
@@ -181,6 +184,7 @@ export default function Usuarios() {
                       </span>
                     </td>
                     <td>
+                      {/* ✅ PROTEÇÃO ADICIONAL: Não mostrar ações se não pode interagir */}
                       {podeInteragirComUsuario(user) ? (
                         <div className="action-buttons">
                           {user.status === 'pendente' ? (
@@ -191,7 +195,7 @@ export default function Usuarios() {
                           ) : (
                             <>
                               <button className="btn-edit" onClick={() => handleEdit(user.id)}>Editar</button>
-                              {(usuarioLogado?.perfil_id === 1 || usuarioLogado?.perfil_id === 2) && (
+                              {usuarioLogado?.perfil_id === 1 && (
                                 <button className="btn-delete" onClick={() => handleDelete(user.id)}>Excluir</button>
                               )}
                             </>
