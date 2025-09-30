@@ -25,14 +25,21 @@ export default function Usuarios() {
     try {
       setLoading(true);
       const res = await fetchUsuarios();
-      setUsuarios(res.data);
+      let listaUsuarios = res.data;
+
+      // ✅ FILTRO ADICIONADO: Coordenador não vê Master
+      if (usuarioLogado?.perfil_id === 2) {
+        listaUsuarios = listaUsuarios.filter(u => u.perfil_id !== 1);
+      }
+
+      setUsuarios(listaUsuarios);
     } catch (err) {
       console.error("Erro ao buscar usuários:", err);
       setErro(err.response?.data?.message || 'Não foi possível carregar os usuários.');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [usuarioLogado]);
 
   useEffect(() => {
     carregarUsuarios();
@@ -114,6 +121,15 @@ export default function Usuarios() {
     }
   };
 
+  // ✅ FUNÇÃO AUXILIAR: Verifica se deve mostrar ações
+  const podeInteragirComUsuario = (user) => {
+    // Coordenador não pode interagir com Master (mas o backend já bloqueia também)
+    if (usuarioLogado?.perfil_id === 2 && user.perfil_id === 1) {
+      return false;
+    }
+    return true;
+  };
+
   return (
     <div className="usuarios-container">
       <BackButton />
@@ -168,21 +184,26 @@ export default function Usuarios() {
                       </span>
                     </td>
                     <td>
-                      <div className="action-buttons">
-                        {user.status === 'pendente' ? (
-                          <>
-                            <button className="btn-approve" onClick={() => handleAprovar(user.id)}>Aprovar</button>
-                            <button className="btn-reject" onClick={() => handleRecusar(user.id)}>Recusar</button>
-                          </>
-                        ) : (
-                          <>
-                            <button className="btn-edit" onClick={() => handleEdit(user.id)}>Editar</button>
-                            {usuarioLogado?.perfil_id === 1 && (
-                              <button className="btn-delete" onClick={() => handleDelete(user.id)}>Excluir</button>
-                            )}
-                          </>
-                        )}
-                      </div>
+                      {/* ✅ PROTEÇÃO ADICIONAL: Não mostrar ações se não pode interagir */}
+                      {podeInteragirComUsuario(user) ? (
+                        <div className="action-buttons">
+                          {user.status === 'pendente' ? (
+                            <>
+                              <button className="btn-approve" onClick={() => handleAprovar(user.id)}>Aprovar</button>
+                              <button className="btn-reject" onClick={() => handleRecusar(user.id)}>Recusar</button>
+                            </>
+                          ) : (
+                            <>
+                              <button className="btn-edit" onClick={() => handleEdit(user.id)}>Editar</button>
+                              {usuarioLogado?.perfil_id === 1 && (
+                                <button className="btn-delete" onClick={() => handleDelete(user.id)}>Excluir</button>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="no-actions">-</span>
+                      )}
                     </td>
                   </tr>
                 ))
