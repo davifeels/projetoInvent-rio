@@ -44,12 +44,15 @@ export default function CadastroUsuario() {
         { id: "3", nome: "Usuário" },
       ];
       
+      // ✅ CORRIGIDO AQUI
       if (isMaster) {
-        setPerfisDisponiveis(todosPerfis.filter(p => p.id !== "1")); 
+        // Master pode criar Coordenador e Usuário (mas não outro Master)
+        setPerfisDisponiveis(todosPerfis.filter(p => p.id === "2" || p.id === "3")); 
         const resSetores = await fetchSetores();
         setSetores(resSetores.data);
       } 
       else if (isCoordenador) {
+        // Coordenador só pode criar Usuário
         setPerfisDisponiveis(todosPerfis.filter(p => p.id === "3"));
         setFormData(prev => ({ ...prev, sigla_setor: usuario.sigla_setor }));
       }
