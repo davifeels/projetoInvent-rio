@@ -189,6 +189,7 @@ export default function InventarioPessoal() {
   if (!isEditing) {
     return (
       <div className="display-container">
+        <BackButton /> {/* ADICIONE ESTA LINHA */}
         <div className="inventario-content-wrapper">
           <div className="display-header">
             <h2>Seu Inventário de Dados Pessoais</h2>
@@ -222,7 +223,8 @@ export default function InventarioPessoal() {
 
   // TELA DE FORMULÁRIO (EDIÇÃO/CRIAÇÃO)
   return (
-    <div className="page-container-inventario">
+     <div className="page-container-inventario">
+        <BackButton /> {/* ADICIONE ESTA LINHA */}
       <div className="inventario-content-wrapper">
         <header className="inventario-header">
           <h2>{dadosDoInventario ? 'Editar' : 'Preencher'} Inventário de Dados Pessoais</h2>

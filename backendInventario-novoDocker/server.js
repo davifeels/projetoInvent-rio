@@ -29,7 +29,8 @@ dbPool.getConnection()
 const corsOptions = {
   origin: [
     'http://localhost:3001',       // frontend local
-    'http://172.19.0.2:3000',      // backend docker/local network
+    'http://172.19.0.2:3000', 
+    'http://10.0.11.88:3001',      // backend docker/local network
     process.env.CORS_ORIGIN        // URL adicional em produção
   ].filter(Boolean),
   credentials: true,              // permite cookies e headers de autenticação

@@ -1,8 +1,8 @@
 /* src/components/BackButton.css */
 
 .back-button {
-  position: absolute;
-  top: 30px;
+  position: fixed;
+  top: 20px;
   left: 20px;
   display: inline-flex;
   align-items: center;
@@ -20,6 +20,15 @@
   z-index: 1000;
   width: auto;
   max-width: 150px;
+}
+
+/* OVERRIDE ESPECÍFICO PARA PÁGINAS COM CONTAINER */
+.usuarios-container .back-button,
+.display-container-wrapper .back-button {
+  position: absolute !important;
+  top: 20px !important;
+  left: 20px !important;
+  z-index: 10 !important;
 }
 
 .back-button:hover {
@@ -41,9 +50,81 @@
   font-weight: 600;
 }
 
+/* Responsividade para tablets */
+@media (max-width: 992px) {
+  .back-button {
+    top: 15px;
+    left: 15px;
+    padding: 0.65rem 1.1rem;
+    font-size: 0.92rem;
+  }
+  
+  .usuarios-container .back-button,
+  .display-container-wrapper .back-button {
+    top: 15px !important;
+    left: 15px !important;
+  }
+}
+
+/* Responsividade para celulares */
 @media (max-width: 768px) {
   .back-button {
+    top: 12px;
+    left: 12px;
     padding: 0.6rem 1rem;
     font-size: 0.9rem;
+    max-width: 130px;
+  }
+  
+  .back-arrow {
+    font-size: 1.2rem;
+  }
+  
+  .usuarios-container .back-button,
+  .display-container-wrapper .back-button {
+    top: 12px !important;
+    left: 12px !important;
+  }
+}
+
+/* Telas muito pequenas */
+@media (max-width: 480px) {
+  .back-button {
+    top: 10px;
+    left: 10px;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.85rem;
+    max-width: 120px;
+  }
+  
+  .back-arrow {
+    font-size: 1.1rem;
+  }
+  
+  .usuarios-container .back-button,
+  .display-container-wrapper .back-button {
+    top: 10px !important;
+    left: 10px !important;
+  }
+}
+
+/* Telas minúsculas */
+@media (max-width: 360px) {
+  .back-button {
+    top: 8px;
+    left: 8px;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
+    max-width: 110px;
+  }
+  
+  .back-arrow {
+    font-size: 1rem;
+  }
+  
+  .usuarios-container .back-button,
+  .display-container-wrapper .back-button {
+    top: 8px !important;
+    left: 8px !important;
   }
 }

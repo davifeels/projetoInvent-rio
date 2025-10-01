@@ -52,13 +52,12 @@ const login = async (req, res) => {
 
         const payload = {
             id: usuario.id,
-            nome: usuario.nome, // 👈 ESSA LINHA É FUNDAMENTAL
+            nome: usuario.nome,
             perfil_id: usuario.perfil_id,
             setor_id: usuario.setor_id,
             setor_nome: usuario.setor_nome,
             sigla_setor: usuario.sigla_setor
         };
-
 
         const accessToken = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '8h' });
         const refreshToken = jwt.sign({ id: usuario.id }, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -130,7 +129,8 @@ const refreshToken = async (req, res) => {
 // LIMPAR TOKENS (placeholder)
 // ==============================
 const limparTokensExpirados = async (req, res) => {
-    const quemExecuta = req.usuario;
+    // ✅ CORREÇÃO: Mudado de req.usuario para req.user
+    const quemExecuta = req.user;
 
     try {
         const quantidadeRemovida = 0; // A lógica real deve ser implementada depois
@@ -160,12 +160,12 @@ const limparTokensExpirados = async (req, res) => {
 // REQUEST ACCESS (Solicitação de Acesso)
 // ==============================
 const requestAccess = async (req, res) => {
-    console.log('✅ Chegou na função requestAccess!'); // <-- LOG DE DEPURAÇÃO
-    console.log('Dados recebidos:', req.body); // <-- LOG DE DEPURAÇÃO
+    console.log('✅ Chegou na função requestAccess!');
+    console.log('Dados recebidos:', req.body);
 
     const { nome, email, senha, setor_id, funcao_id } = req.body;
 
-    if (!nome || !email || !senha || !setor_id || !funcao_id) { // ✅ Adicionando validação básica de campos
+    if (!nome || !email || !senha || !setor_id || !funcao_id) {
         console.error('❌ requestAccess: Campos obrigatórios faltando.');
         return res.status(400).json({ message: 'Todos os campos são obrigatórios para a solicitação de acesso.' });
     }
@@ -187,8 +187,7 @@ const requestAccess = async (req, res) => {
         console.log('🎉 requestAccess: Solicitação de acesso enviada com sucesso para:', email);
         res.status(201).json({ message: 'Solicitação enviada com sucesso! Aguarde aprovação.' });
     } catch (error) {
-        console.error('❌ Erro interno no servidor durante a solicitação de acesso:', error); // <-- LOG DE ERRO DETALHADO
-        // Se o erro estiver vindo do registrarAuditoria, ou de um erro de DB
+        console.error('❌ Erro interno no servidor durante a solicitação de acesso:', error);
         res.status(500).json({ message: 'Erro interno no servidor ao processar solicitação.' });
     }
 };

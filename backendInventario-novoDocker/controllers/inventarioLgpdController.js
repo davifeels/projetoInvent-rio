@@ -61,7 +61,11 @@ const getInventario = async (req, res) => {
         }
     } catch (error) {
         console.error("Erro ao buscar inventário pessoal (MySQL):", error);
-        await registrarAuditoria('ERRO_BUSCAR_INVENTARIO', usuarioId, setor_id, { ip: req.ip, erro: error.message });
+        // ✅ CORREÇÃO: Ordem correta dos parâmetros
+        await registrarAuditoria(usuarioId, 'ERRO_BUSCAR_INVENTARIO', setor_id, { 
+            ip: req.ip, 
+            erro: error.message 
+        });
         res.status(500).json({ message: 'Erro interno ao buscar inventário.' });
     }
 };
@@ -79,7 +83,10 @@ const cadastrarOuAtualizarInventarioUsuario = async (req, res) => {
         connection = await pool.getConnection();
         await connection.beginTransaction();
 
-        const [existingInventarioRows] = await connection.query('SELECT id FROM inventario_lgpd WHERE usuario_id = ?', [usuario.id]);
+        const [existingInventarioRows] = await connection.query(
+            'SELECT id FROM inventario_lgpd WHERE usuario_id = ?', 
+            [usuario.id]
+        );
         
         let dadosParaSalvar = stringifyJsonFields(dados);
 
@@ -90,18 +97,31 @@ const cadastrarOuAtualizarInventarioUsuario = async (req, res) => {
         if (existingInventarioRows.length > 0) {
             // ATUALIZAÇÃO
             const inventarioId = existingInventarioRows[0].id;
-            // CORREÇÃO: A tabela usa `data_atualizacao` que é atualizada automaticamente pelo MySQL.
-            await connection.query('UPDATE inventario_lgpd SET ? WHERE id = ?', [dadosParaSalvar, inventarioId]);
-            await registrarAuditoria(usuario.id, 'INVENTARIO_LGPD_ATUALIZADO', usuario.setor_id, { inventario_id: inventarioId, ip: req.ip });
+            await connection.query(
+                'UPDATE inventario_lgpd SET ? WHERE id = ?', 
+                [dadosParaSalvar, inventarioId]
+            );
+            await registrarAuditoria(
+                usuario.id, 
+                'INVENTARIO_LGPD_ATUALIZADO', 
+                usuario.setor_id, 
+                { inventario_id: inventarioId, ip: req.ip }
+            );
             res.status(200).json({ message: 'Seu inventário foi atualizado com sucesso.' });
         } else {
             // CRIAÇÃO
             dadosParaSalvar.usuario_id = usuario.id;
-            // CORREÇÃO: A tabela usa `data_insercao` e `data_atualizacao` que são preenchidas automaticamente pelo MySQL.
-            // O código não precisa (e não deve) tentar inseri-las.
-            const [result] = await connection.query('INSERT INTO inventario_lgpd SET ?', dadosParaSalvar);
+            const [result] = await connection.query(
+                'INSERT INTO inventario_lgpd SET ?', 
+                dadosParaSalvar
+            );
             const novoId = result.insertId;
-            await registrarAuditoria(usuario.id, 'INVENTARIO_LGPD_CRIADO', usuario.setor_id, { inventario_id: novoId, ip: req.ip });
+            await registrarAuditoria(
+                usuario.id, 
+                'INVENTARIO_LGPD_CRIADO', 
+                usuario.setor_id, 
+                { inventario_id: novoId, ip: req.ip }
+            );
             res.status(201).json({ message: 'Seu inventário foi cadastrado com sucesso.' });
         }
         
@@ -112,7 +132,12 @@ const cadastrarOuAtualizarInventarioUsuario = async (req, res) => {
             await connection.rollback();
         }
         console.error('Erro ao cadastrar/atualizar inventário do usuário (MySQL):', err);
-        await registrarAuditoria(usuario.id, 'INVENTARIO_LGPD_OPERACAO_FALHA', usuario.setor_id, { erro: err.message, ip: req.ip });
+        await registrarAuditoria(
+            usuario.id, 
+            'INVENTARIO_LGPD_OPERACAO_FALHA', 
+            usuario.setor_id, 
+            { erro: err.message, ip: req.ip }
+        );
         res.status(500).json({ message: 'Erro ao processar seu inventário.', detalhe: err.message });
     } finally {
         if (connection) {
@@ -138,11 +163,13 @@ const deleteInventario = async (req, res) => {
         res.status(200).json({ message: 'Inventário deletado com sucesso.' });
     } catch (error) {
         console.error('Erro ao deletar inventário pessoal (MySQL):', error);
-        await registrarAuditoria(usuarioId, 'ERRO_DELETAR_INVENTARIO', setor_id, { ip: req.ip, erro: error.message });
+        await registrarAuditoria(usuarioId, 'ERRO_DELETAR_INVENTARIO', setor_id, { 
+            ip: req.ip, 
+            erro: error.message 
+        });
         res.status(500).json({ message: 'Erro interno ao deletar inventário.' });
     }
 };
-
 
 /**
  * 4. Exporta todos os inventários LGPD para Excel (acesso Master)
@@ -175,9 +202,8 @@ const exportAllInventariosLgpd = async (req, res) => {
             { header: 'Setor', key: 'sigla_setor', width: 15 },
             { header: 'Nome Serviço/Processo', key: 'nome_servico', width: 40 },
             { header: 'Resumo da Atividade', key: 'resumo_atividade', width: 60 },
-            // CORREÇÃO: Usando os nomes de coluna corretos do banco de dados
-            { header: 'Data de Criação', key: 'data_insercao', width: 20 },
-            { header: 'Última Atualização', key: 'data_atualizacao', width: 20 },
+            { header: 'Data de Criação', key: 'createdAt', width: 20 },
+            { header: 'Última Atualização', key: 'updatedAt', width: 20 },
         ];
 
         const dataForExcel = rows.map(row => {
@@ -188,8 +214,7 @@ const exportAllInventariosLgpd = async (req, res) => {
                 const value = parsedRow[key];
                 if (Array.isArray(value)) {
                     formattedRow[key] = value.join('; ');
-                // CORREÇÃO: Lendo as chaves corretas dos dados
-                } else if ((key === 'data_insercao' || key === 'data_atualizacao') && value) {
+                } else if ((key === 'createdAt' || key === 'updatedAt') && value) {
                     formattedRow[key] = new Date(value).toLocaleString('pt-BR');
                 } else {
                     formattedRow[key] = value;
@@ -199,7 +224,14 @@ const exportAllInventariosLgpd = async (req, res) => {
         });
 
         worksheet.addRows(dataForExcel);
-        await registrarAuditoria(usuarioIdExecutor, 'RELATORIO_INVENTARIO_LGPD_EXPORTADO', setorIdExecutor, { ip: req.ip });
+        
+        await registrarAuditoria(
+            usuarioIdExecutor, 
+            'RELATORIO_INVENTARIO_LGPD_EXPORTADO', 
+            setorIdExecutor, 
+            { ip: req.ip }
+        );
+        
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', 'attachment; filename="Relatorio_Inventario_LGPD.xlsx"');
         await workbook.xlsx.write(res);
@@ -207,11 +239,15 @@ const exportAllInventariosLgpd = async (req, res) => {
 
     } catch (error) {
         console.error("Erro ao exportar inventários LGPD:", error);
-        await registrarAuditoria(usuarioIdExecutor, 'ERRO_EXPORTAR_INVENTARIO', setorIdExecutor, { ip: req.ip, erro: error.message });
+        await registrarAuditoria(
+            usuarioIdExecutor, 
+            'ERRO_EXPORTAR_INVENTARIO', 
+            setorIdExecutor, 
+            { ip: req.ip, erro: error.message }
+        );
         res.status(500).json({ message: 'Erro interno ao exportar inventários.' });
     }
 };
-
 
 module.exports = {
     getInventario,

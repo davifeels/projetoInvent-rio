@@ -17,7 +17,7 @@ body {
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
-  padding-top: 100px;
+  padding-top: 80px;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -26,36 +26,37 @@ body {
   width: 100%;
 }
 
-/* CABEÇALHO CENTRALIZADO E RESPONSIVO */
+/* CABEÇALHO - RESPONSIVO ADAPTATIVO */
 .usuarios-header {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
   gap: 1.5rem;
   position: relative;
   width: 100%;
+  flex-wrap: wrap;
 }
 
 .usuarios-header h2 {
   color: #2c3e50;
-  text-align: center;
-  font-size: clamp(1.5rem, 4vw, 1.8rem);
+  font-size: clamp(1.3rem, 3.5vw, 1.8rem);
   margin: 0;
-  padding: 0 1rem;
   word-wrap: break-word;
-  max-width: 100%;
+  overflow-wrap: break-word;
+  flex: 1 1 auto;
+  min-width: 200px;
+  line-height: 1.3;
 }
 
 .header-buttons {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  justify-content: center;
-  align-items: stretch;
-  width: 100%;
-  max-width: 280px;
-  padding: 0 1rem;
+  justify-content: flex-end;
+  align-items: flex-end;
+  min-width: 190px;
+  flex-shrink: 0;
 }
 
 /* BOTÕES COM TAMANHO FIXO E CONSISTENTE */
@@ -76,9 +77,9 @@ body {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 100% !important;
-  max-width: 280px !important;
-  margin: 0 auto !important;
+  width: 190px !important;
+  min-width: 190px !important;
+  max-width: 190px !important;
   box-sizing: border-box !important;
 }
 
@@ -259,7 +260,11 @@ body {
   font-size: 1.2rem;
 }
 
-/* RESPONSIVIDADE APRIMORADA - MANTÉM TAMANHO FIXO DOS BOTÕES */
+/* ========================================== */
+/* RESPONSIVIDADE COMPLETA E PERFEITA         */
+/* ========================================== */
+
+/* TELAS MÉDIAS - Mantém botões à direita */
 @media (max-width: 1200px) {
   .usuarios-container {
     padding: 1.5rem;
@@ -270,13 +275,13 @@ body {
   .usuarios-table {
     min-width: 700px;
   }
-
-  /* Garante que os botões mantenham o tamanho */
-  .header-buttons {
-    max-width: 280px !important;
+  
+  .usuarios-header h2 {
+    font-size: clamp(1.25rem, 3.2vw, 1.6rem);
   }
 }
 
+/* TELAS MÉDIAS - Começa a ajustar */
 @media (max-width: 992px) {
   .usuarios-container {
     padding: 1.25rem;
@@ -289,25 +294,18 @@ body {
     gap: 1.25rem;
   }
   
+  .usuarios-header h2 {
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+  }
+  
   .usuarios-table th,
   .usuarios-table td {
     padding: 10px 12px;
     font-size: 0.85rem;
   }
-
-  /* Força os botões a manterem o tamanho */
-  .header-buttons {
-    max-width: 280px !important;
-  }
-  
-  .usuarios-container .header-buttons .btn-export,
-  .usuarios-container .header-buttons .btn-create {
-    width: 280px !important;
-    max-width: 280px !important;
-    min-width: 280px !important;
-  }
 }
 
+/* TELAS PEQUENAS E VERTICAIS - Centraliza tudo */
 @media (max-width: 768px) {
   .usuarios-container {
     padding: 1rem;
@@ -316,25 +314,33 @@ body {
     border-radius: 6px;
   }
   
+  /* MUDA LAYOUT PARA COLUNA CENTRALIZADA */
   .usuarios-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     gap: 1rem;
   }
   
-  /* IMPORTANTE: Mantém o tamanho fixo mesmo em telas pequenas */
-  .header-buttons {
-    max-width: 280px !important;
-    min-width: 280px !important;
-    padding: 0;
+  .usuarios-header h2 {
+    text-align: center;
+    width: 100%;
+    font-size: clamp(1.15rem, 4vw, 1.4rem);
   }
   
+  .header-buttons {
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 280px;
+  }
+  
+  /* Botões centralizados em telas pequenas */
   .usuarios-container .header-buttons .btn-export,
   .usuarios-container .header-buttons .btn-create {
-    width: 280px !important;
+    width: 100% !important;
     max-width: 280px !important;
-    min-width: 280px !important;
-    height: 40px !important;
-    min-height: 40px !important;
-    max-height: 40px !important;
+    min-width: auto !important;
   }
   
   .table-responsive {
@@ -364,6 +370,7 @@ body {
   }
 }
 
+/* TELAS MUITO PEQUENAS */
 @media (max-width: 576px) {
   .usuarios-container {
     padding: 0.75rem;
@@ -376,18 +383,18 @@ body {
     gap: 0.75rem;
   }
   
-  /* CRÍTICO: Força tamanho fixo mesmo em telas muito pequenas */
+  .usuarios-header h2 {
+    font-size: clamp(1.1rem, 4.5vw, 1.3rem);
+  }
+  
   .header-buttons {
-    max-width: 280px !important;
-    min-width: 280px !important;
-    padding: 0;
+    max-width: 280px;
   }
   
   .usuarios-container .header-buttons .btn-export,
   .usuarios-container .header-buttons .btn-create {
-    width: 280px !important;
+    width: 100% !important;
     max-width: 280px !important;
-    min-width: 280px !important;
     height: 40px !important;
     min-height: 40px !important;
     max-height: 40px !important;
@@ -416,6 +423,7 @@ body {
   }
 }
 
+/* TELAS MINÚSCULAS */
 @media (max-width: 400px) {
   .usuarios-container {
     padding: 0.5rem;
@@ -426,23 +434,20 @@ body {
   
   .usuarios-header h2 {
     padding: 0 0.5rem;
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 5vw, 1.2rem);
   }
   
-  /* ÚLTIMO RECURSO: Mantém tamanho fixo até nas menores telas */
   .header-buttons {
-    max-width: 280px !important;
-    min-width: 280px !important;
+    max-width: 260px;
   }
   
   .usuarios-container .header-buttons .btn-export,
   .usuarios-container .header-buttons .btn-create {
-    width: 280px !important;
-    max-width: 280px !important;
-    min-width: 280px !important;
-    height: 40px !important;
-    min-height: 40px !important;
-    max-height: 40px !important;
+    width: 100% !important;
+    max-width: 260px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
     padding: 0.5rem 0.8rem !important;
     font-size: 0.85rem !important;
   }
@@ -464,5 +469,32 @@ body {
   
   .action-buttons button {
     padding: 6px 10px;
+  }
+}
+
+/* DISPOSITIVOS EM MODO PORTRAIT (vertical) */
+@media (max-height: 900px) and (max-width: 768px) and (orientation: portrait) {
+  .usuarios-header {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  
+  .header-buttons {
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+/* DISPOSITIVOS EM MODO LANDSCAPE (horizontal) com tela grande */
+@media (min-width: 769px) and (orientation: landscape) {
+  .usuarios-header {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+  
+  .header-buttons {
+    align-items: flex-end !important;
+    justify-content: flex-end !important;
   }
 }

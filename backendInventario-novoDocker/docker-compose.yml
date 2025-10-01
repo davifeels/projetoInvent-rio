@@ -11,12 +11,14 @@ services:
     restart: always
     depends_on:
       - db
+
   db:
     image: mysql:8.0
     container_name: db_colaboradores
     restart: always
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_data:/var/lib/mysql
     ports:
       - "3306:3306"
     env_file:
@@ -25,3 +27,9 @@ services:
       - MYSQL_ROOT_PASSWORD=davi080401
       - MYSQL_DATABASE=cadastro_colaboradores
       - MYSQL_PASSWORD=davi080401
+      - MYSQL_CHARACTER_SET_SERVER=utf8mb4
+      - MYSQL_COLLATION_SERVER=utf8mb4_unicode_ci
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+volumes:
+  mysql_data:
