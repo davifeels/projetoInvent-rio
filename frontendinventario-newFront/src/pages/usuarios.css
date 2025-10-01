@@ -14,80 +14,94 @@ body {
 
 /* Container principal */
 .usuarios-container {
-  max-width: 12000px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
-  padding-top: 2rem;
+  padding-top: 100px;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-top: 2rem;
   position: relative;
+  width: 100%;
 }
 
-/* Título */
-.usuarios-container h2 {
-  color: #2c3e50;
-  text-align: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #eee;
-  font-size: 1.8rem;
-}
-
-/* Estilos para o cabeçalho com botões - CORRIGIDO */
+/* CABEÇALHO CENTRALIZADO E RESPONSIVO */
 .usuarios-header {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
   margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.5rem;
   position: relative;
-  min-height: 60px;
+  width: 100%;
 }
 
 .usuarios-header h2 {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  color: #2c3e50;
+  text-align: center;
+  font-size: clamp(1.5rem, 4vw, 1.8rem);
   margin: 0;
-  border: none;
-  padding: 0;
+  padding: 0 1rem;
+  word-wrap: break-word;
+  max-width: 100%;
 }
 
 .header-buttons {
   display: flex;
-  gap: 1rem;
-  margin-left: auto;
+  flex-direction: column;
+  gap: 0.75rem;
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+  max-width: 280px;
+  padding: 0 1rem;
 }
 
-.btn-export,
-.btn-create {
-  padding: 0.75rem 1.5rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
+/* BOTÕES COM TAMANHO FIXO E CONSISTENTE */
+.usuarios-container .header-buttons .btn-export,
+.usuarios-container .header-buttons .btn-create {
+  padding: 0.6rem 1.2rem !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  white-space: nowrap !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  line-height: 1.2 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  max-width: 280px !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
 }
 
-.btn-export {
-  background-color: #166534;
-  color: white;
-}
-.btn-export:hover {
-  background-color: #14532d;
+.usuarios-container .header-buttons .btn-export {
+  background-color: #166534 !important;
+  color: white !important;
 }
 
-.btn-create {
-  background-color: #1d4ed8;
-  color: white;
+.usuarios-container .header-buttons .btn-export:hover {
+  background-color: #14532d !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
 }
-.btn-create:hover {
-  background-color: #1e40af;
+
+.usuarios-container .header-buttons .btn-create {
+  background-color: #1d4ed8 !important;
+  color: white !important;
+}
+
+.usuarios-container .header-buttons .btn-create:hover {
+  background-color: #1e40af !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
 }
 
 /* Mensagem de erro e sucesso */
@@ -97,26 +111,31 @@ body {
   margin-bottom: 1.5rem;
   border-radius: 8px;
   font-weight: 500;
+  word-wrap: break-word;
 }
+
 .message.error {
   background-color: #f8d7da;
   color: #721c24;
   border: 1px solid #f5c6cb;
 }
+
 .message.success {
   background-color: #d4edda;
   color: #155724;
   border: 1px solid #c3e6cb;
 }
 
-
 /* Tabela */
 .table-responsive {
   overflow-x: auto;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
 }
 
 .usuarios-table {
   width: 100%;
+  min-width: 800px;
   border-collapse: collapse;
   background-color: #ffffff;
   border-radius: 8px;
@@ -128,14 +147,16 @@ body {
   padding: 12px 15px;
   border-bottom: 1px solid #e9ecef;
   text-align: left;
+  word-wrap: break-word;
 }
 
 .usuarios-table thead th {
   background-color: #f8f9fa;
   font-weight: 600;
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: clamp(0.7rem, 1.5vw, 0.8rem);
   color: #6c757d;
+  white-space: nowrap;
 }
 
 .usuarios-table tbody tr:hover {
@@ -145,75 +166,303 @@ body {
 .status {
   padding: 4px 8px;
   border-radius: 999px;
-  font-size: 0.8rem;
+  font-size: clamp(0.7rem, 1.5vw, 0.8rem);
   font-weight: 600;
   text-transform: capitalize;
   display: inline-block;
   min-width: 80px;
   text-align: center;
+  white-space: nowrap;
 }
 
 .status-ativo {
   background-color: #dcfce7;
   color: #16a34a;
 }
+
 .status-pendente {
   background-color: #fef9c3;
   color: #b45309;
 }
+
 .status-rejeitado {
   background-color: #fee2e2;
   color: #b91c1c;
 }
-.status-ativo-inventario-pendente {
-    background-color: #e0f2fe;
-    color: #0284c7;
-}
 
+.status-ativo-inventario-pendente {
+  background-color: #e0f2fe;
+  color: #0284c7;
+}
 
 .action-buttons {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .action-buttons button {
   padding: 8px 12px;
-  font-size: 0.9rem;
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
   font-weight: 600;
   border-radius: 5px;
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .btn-edit {
   background-color: #ffc107;
   color: #333;
 }
+
 .btn-edit:hover {
   background-color: #e0a800;
+  transform: translateY(-2px);
 }
 
 .btn-delete {
   background-color: #dc3545;
   color: white;
 }
+
 .btn-delete:hover {
   background-color: #c82333;
+  transform: translateY(-2px);
 }
 
 .btn-approve {
-    background-color: #28a745;
-    color: white;
+  background-color: #28a745;
+  color: white;
 }
+
 .btn-approve:hover {
-    background-color: #218838;
+  background-color: #218838;
+  transform: translateY(-2px);
 }
+
 .btn-reject {
-    background-color: #ffc107;
-    color: #333;
+  background-color: #ffc107;
+  color: #333;
 }
+
 .btn-reject:hover {
-    background-color: #e0a800;
+  background-color: #e0a800;
+  transform: translateY(-2px);
+}
+
+.no-actions {
+  color: #9ca3af;
+  font-size: 1.2rem;
+}
+
+/* RESPONSIVIDADE APRIMORADA - MANTÉM TAMANHO FIXO DOS BOTÕES */
+@media (max-width: 1200px) {
+  .usuarios-container {
+    padding: 1.5rem;
+    padding-top: 90px;
+    margin: 1.5rem auto;
+  }
+  
+  .usuarios-table {
+    min-width: 700px;
+  }
+
+  /* Garante que os botões mantenham o tamanho */
+  .header-buttons {
+    max-width: 280px !important;
+  }
+}
+
+@media (max-width: 992px) {
+  .usuarios-container {
+    padding: 1.25rem;
+    padding-top: 80px;
+    margin: 1rem auto;
+    border-radius: 8px;
+  }
+  
+  .usuarios-header {
+    gap: 1.25rem;
+  }
+  
+  .usuarios-table th,
+  .usuarios-table td {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+
+  /* Força os botões a manterem o tamanho */
+  .header-buttons {
+    max-width: 280px !important;
+  }
+  
+  .usuarios-container .header-buttons .btn-export,
+  .usuarios-container .header-buttons .btn-create {
+    width: 280px !important;
+    max-width: 280px !important;
+    min-width: 280px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .usuarios-container {
+    padding: 1rem;
+    padding-top: 70px;
+    margin: 0.5rem;
+    border-radius: 6px;
+  }
+  
+  .usuarios-header {
+    gap: 1rem;
+  }
+  
+  /* IMPORTANTE: Mantém o tamanho fixo mesmo em telas pequenas */
+  .header-buttons {
+    max-width: 280px !important;
+    min-width: 280px !important;
+    padding: 0;
+  }
+  
+  .usuarios-container .header-buttons .btn-export,
+  .usuarios-container .header-buttons .btn-create {
+    width: 280px !important;
+    max-width: 280px !important;
+    min-width: 280px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+  }
+  
+  .table-responsive {
+    margin: 0 -1rem;
+    padding: 0 1rem;
+  }
+  
+  .usuarios-table {
+    min-width: 650px;
+  }
+  
+  .usuarios-table th,
+  .usuarios-table td {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    width: 100%;
+    align-items: stretch;
+  }
+  
+  .action-buttons button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .usuarios-container {
+    padding: 0.75rem;
+    padding-top: 60px;
+    margin: 0.25rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .usuarios-header {
+    gap: 0.75rem;
+  }
+  
+  /* CRÍTICO: Força tamanho fixo mesmo em telas muito pequenas */
+  .header-buttons {
+    max-width: 280px !important;
+    min-width: 280px !important;
+    padding: 0;
+  }
+  
+  .usuarios-container .header-buttons .btn-export,
+  .usuarios-container .header-buttons .btn-create {
+    width: 280px !important;
+    max-width: 280px !important;
+    min-width: 280px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+    padding: 0.6rem 1rem !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .table-responsive {
+    margin: 0 -0.75rem;
+    padding: 0 0.75rem;
+  }
+  
+  .usuarios-table {
+    min-width: 600px;
+  }
+  
+  .usuarios-table th,
+  .usuarios-table td {
+    padding: 6px 8px;
+    font-size: 0.75rem;
+  }
+  
+  .status {
+    min-width: 70px;
+    padding: 3px 6px;
+  }
+}
+
+@media (max-width: 400px) {
+  .usuarios-container {
+    padding: 0.5rem;
+    padding-top: 50px;
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  .usuarios-header h2 {
+    padding: 0 0.5rem;
+    font-size: 1.3rem;
+  }
+  
+  /* ÚLTIMO RECURSO: Mantém tamanho fixo até nas menores telas */
+  .header-buttons {
+    max-width: 280px !important;
+    min-width: 280px !important;
+  }
+  
+  .usuarios-container .header-buttons .btn-export,
+  .usuarios-container .header-buttons .btn-create {
+    width: 280px !important;
+    max-width: 280px !important;
+    min-width: 280px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+    padding: 0.5rem 0.8rem !important;
+    font-size: 0.85rem !important;
+  }
+  
+  .table-responsive {
+    margin: 0 -0.5rem;
+    padding: 0 0.5rem;
+  }
+  
+  .usuarios-table {
+    min-width: 550px;
+  }
+  
+  .usuarios-table th,
+  .usuarios-table td {
+    padding: 5px 6px;
+    font-size: 0.7rem;
+  }
+  
+  .action-buttons button {
+    padding: 6px 10px;
+  }
 }

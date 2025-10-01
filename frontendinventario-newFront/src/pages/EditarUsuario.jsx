@@ -42,19 +42,19 @@ export default function EditarUsuario() {
       setSetores(resSetores.data);
       setFuncoes(resFuncoes.data);
 
-      const perfisDisponiveis = [
+      const todosPerfis = [
         { id: "1", nome: "Master" }, 
         { id: "2", nome: "Coordenador" }, 
         { id: "3", nome: "Usuário" }
       ];
 
-      // ✅ CORREÇÃO APLICADA AQUI
+      // CORREÇÃO: Master pode promover para Master, Coordenador ou Usuário
       if (usuarioLogado?.perfil_id === 1) { 
-        // Master pode editar para Coordenador ou Usuário (mas não para Master)
-        setPerfis(perfisDisponiveis.filter(p => p.id === "2" || p.id === "3")); 
+        // Master vê TODAS as opções (incluindo Master)
+        setPerfis(todosPerfis); 
       } else if (usuarioLogado?.perfil_id === 2) { 
         // Coordenador só pode editar para Usuário
-        setPerfis(perfisDisponiveis.filter(p => p.id === "3")); 
+        setPerfis(todosPerfis.filter(p => p.id === "3")); 
       } else {
         // Usuário comum não edita ninguém (não deveria chegar aqui)
         setPerfis([]);

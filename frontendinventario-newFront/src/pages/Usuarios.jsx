@@ -27,10 +27,15 @@ export default function Usuarios() {
       const res = await fetchUsuarios();
       let listaUsuarios = res.data;
 
-      // ✅ FILTRO ADICIONADO: Coordenador não vê Master
+      // FILTROS DE VISUALIZAÇÃO
       if (usuarioLogado?.perfil_id === 2) {
-        listaUsuarios = listaUsuarios.filter(u => u.perfil_id !== 1);
+        // Coordenador só vê usuários do próprio setor (exceto Masters)
+        listaUsuarios = listaUsuarios.filter(u => 
+          u.perfil_id !== 1 && // Não vê Masters
+          u.sigla_setor === usuarioLogado.sigla_setor // Só do próprio setor
+        );
       }
+      // Master vê todos (nenhum filtro aplicado)
 
       setUsuarios(listaUsuarios);
     } catch (err) {
@@ -121,13 +126,17 @@ export default function Usuarios() {
     }
   };
 
-  // ✅ FUNÇÃO AUXILIAR: Verifica se deve mostrar ações
-  const podeInteragirComUsuario = (user) => {
-    // Coordenador não pode interagir com Master (mas o backend já bloqueia também)
-    if (usuarioLogado?.perfil_id === 2 && user.perfil_id === 1) {
-      return false;
+  // Verifica se pode mostrar botão de exclusão
+  const podeExcluir = (user) => {
+    // Master pode excluir qualquer um (exceto outros Masters)
+    if (usuarioLogado?.perfil_id === 1) {
+      return user.perfil_id !== 1; // Master não exclui outro Master
     }
-    return true;
+    // Coordenador pode excluir usuários comuns do seu setor
+    if (usuarioLogado?.perfil_id === 2) {
+      return user.perfil_id === 3 && user.sigla_setor === usuarioLogado.sigla_setor;
+    }
+    return false;
   };
 
   return (
@@ -184,26 +193,21 @@ export default function Usuarios() {
                       </span>
                     </td>
                     <td>
-                      {/* ✅ PROTEÇÃO ADICIONAL: Não mostrar ações se não pode interagir */}
-                      {podeInteragirComUsuario(user) ? (
-                        <div className="action-buttons">
-                          {user.status === 'pendente' ? (
-                            <>
-                              <button className="btn-approve" onClick={() => handleAprovar(user.id)}>Aprovar</button>
-                              <button className="btn-reject" onClick={() => handleRecusar(user.id)}>Recusar</button>
-                            </>
-                          ) : (
-                            <>
-                              <button className="btn-edit" onClick={() => handleEdit(user.id)}>Editar</button>
-                              {usuarioLogado?.perfil_id === 1 && (
-                                <button className="btn-delete" onClick={() => handleDelete(user.id)}>Excluir</button>
-                              )}
-                            </>
-                          )}
-                        </div>
-                      ) : (
-                        <span className="no-actions">-</span>
-                      )}
+                      <div className="action-buttons">
+                        {user.status === 'pendente' ? (
+                          <>
+                            <button className="btn-approve" onClick={() => handleAprovar(user.id)}>Aprovar</button>
+                            <button className="btn-reject" onClick={() => handleRecusar(user.id)}>Recusar</button>
+                          </>
+                        ) : (
+                          <>
+                            <button className="btn-edit" onClick={() => handleEdit(user.id)}>Editar</button>
+                            {podeExcluir(user) && (
+                              <button className="btn-delete" onClick={() => handleDelete(user.id)}>Excluir</button>
+                            )}
+                          </>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))

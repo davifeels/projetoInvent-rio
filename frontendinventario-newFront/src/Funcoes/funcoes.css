@@ -1,36 +1,24 @@
-/* ======================================================== */
-/* CSS Específico para a Página de Gerenciamento de Funções */
-/* ======================================================== */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Paleta de Cores Principal */
   --cor-primaria: #1f6feb;
   --cor-primaria-hover: #1759c4;
   --cor-secundaria: #1D6F42;
   --cor-secundaria-hover: #165934;
   --cor-perigo: #e53e3e;
   --cor-perigo-hover: #c53030;
-
-  /* Cores de UI */
   --cor-fundo-pagina: #f7faff;
   --cor-painel: #ffffff;
   --cor-borda: #e2e8f0;
   --cor-sombra-discreta: rgba(149, 157, 165, 0.1);
   --cor-sombra-hover: rgba(149, 157, 165, 0.2);
-
-  /* Cores de Texto */
   --cor-texto-titulo: #1a202c;
   --cor-texto-corpo: #4a5568;
   --cor-texto-label: #718096;
-
-  /* Métricas e Transições */
   --raio-borda: 16px;
   --transicao-suave: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-
-/* 1. Base e Estrutura Principal */
 * { box-sizing: border-box; }
 body { font-family: 'Poppins', sans-serif; background-color: var(--cor-fundo-pagina); }
 
@@ -122,7 +110,6 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--cor-fundo-pag
   padding-bottom: 1rem;
 }
 
-/* Formulário de Criação */
 .form-panel form {
   display: flex;
   flex-direction: column;
@@ -161,48 +148,58 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--cor-fundo-pag
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  align-items: center;
 }
 
-/* Botões padronizados */
-.form-buttons .btn-primary, .form-buttons .btn-export {
-  padding: 0.65rem 1.25rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border-radius: 8px;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  width: 100%;
-  text-align: center;
+.form-buttons .btn-primary, 
+.form-buttons .btn-export {
+  padding: 0.6rem 1.2rem !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  border: none !important;
+  color: #fff !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+  width: 280px !important;
+  max-width: 100% !important;
+  text-align: center !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  line-height: 1.2 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
 }
 
 .btn-primary {
-  background-color: var(--cor-primaria);
+  background-color: var(--cor-primaria) !important;
 }
 
 .btn-primary:hover {
-  background-color: var(--cor-primaria-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+  background-color: var(--cor-primaria-hover) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 10px rgba(0,0,0,0.15) !important;
 }
 
 .btn-export {
-  background-color: var(--cor-secundaria);
+  background-color: var(--cor-secundaria) !important;
 }
 
 .btn-export:hover {
-  background-color: var(--cor-secundaria-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+  background-color: var(--cor-secundaria-hover) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 10px rgba(0,0,0,0.15) !important;
 }
 
 .btn-export:disabled {
-  background-color: #9ca3af;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+  background-color: #9ca3af !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 .item-list {
@@ -290,5 +287,16 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--cor-fundo-pag
   .page-container {
     padding: 1rem;
     padding-top: 80px;
+  }
+  
+  .form-buttons .btn-primary,
+  .form-buttons .btn-export {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header h1 {
+    font-size: 1.5rem;
   }
 }

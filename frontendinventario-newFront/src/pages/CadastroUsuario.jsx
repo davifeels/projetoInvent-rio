@@ -44,10 +44,9 @@ export default function CadastroUsuario() {
         { id: "3", nome: "Usuário" },
       ];
       
-      // ✅ CORRIGIDO AQUI
+      // ✅ CORREÇÃO: Master vê TODAS as opções
       if (isMaster) {
-        // Master pode criar Coordenador e Usuário (mas não outro Master)
-        setPerfisDisponiveis(todosPerfis.filter(p => p.id === "2" || p.id === "3")); 
+        setPerfisDisponiveis(todosPerfis); // SEM FILTRO
         const resSetores = await fetchSetores();
         setSetores(resSetores.data);
       } 

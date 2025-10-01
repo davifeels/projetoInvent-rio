@@ -1,3 +1,4 @@
+// -*- coding: utf-8 -*-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { fetchSetores, createSetor, deleteSetor } from '../services/setoresService';
@@ -93,6 +94,7 @@ export default function Setores() {
         {isMasterAdmin && (
           <div className="form-panel">
             <h3 className="panel-title">Criar Novo Setor</h3>
+            
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="nome">Nome do Setor</label>
@@ -123,6 +125,7 @@ export default function Setores() {
                   Adicionar Setor
                 </button>
                 <button
+                  type="button"
                   onClick={handleExportExcel}
                   className="btn-export"
                   disabled={exporting || loading}

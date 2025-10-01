@@ -18,7 +18,6 @@ body {
   border-radius: 0;
 }
 
-/* CABEÇALHO CENTRALIZADO - CORRIGIDO */
 .form-header {
   text-align: center;
   margin-bottom: 2rem;
@@ -92,38 +91,50 @@ body {
 }
 
 .btn-primary, .btn-secondary {
-  padding: 0.9rem 2rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  text-decoration: none;
+  padding: 0 !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease-in-out !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+  min-width: 130px !important;
+  width: 130px !important;
+  max-width: 130px !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  max-height: 42px !important;
+  box-sizing: border-box !important;
+  line-height: 42px !important;
 }
 
 .btn-primary {
-  background-color: #4f46e5;
-  color: white;
+  background-color: #4f46e5 !important;
+  color: white !important;
 }
 
 .btn-primary:hover {
-  background-color: #4338ca;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  background-color: #4338ca !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
 }
 
 .btn-secondary {
-  background-color: #f1f5f9;
-  color: #4f46e5;
-  border: 1px solid #d1d5db;
+  background-color: #f1f5f9 !important;
+  color: #4f46e5 !important;
+  border: 1px solid #d1d5db !important;
 }
 
 .btn-secondary:hover {
-  background-color: #e2e8f0;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  background-color: #e2e8f0 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
 }
 
 .message {
@@ -162,6 +173,8 @@ body {
   }
   .form-actions .btn-primary,
   .form-actions .btn-secondary {
-    width: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
   }
 }

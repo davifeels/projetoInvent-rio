@@ -1,7 +1,5 @@
-/* Importação de fonte moderna do Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-/* Reset básico e full screen */
 *,
 *::before,
 *::after {
@@ -21,8 +19,6 @@ html, body, #root {
   overflow: auto;
 }
 
-
-/* Container principal para ocupar a tela toda */
 .page-container {
   display: flex;
   flex-direction: column;
@@ -35,7 +31,6 @@ html, body, #root {
   border-radius: 0;
 }
 
-/* Cabeçalho */
 .page-header {
   display: flex;
   justify-content: center;
@@ -56,7 +51,6 @@ html, body, #root {
   text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Botão de sair no header */
 .btn-logout {
   background: #ff4d4f;
   color: white;
@@ -77,7 +71,6 @@ html, body, #root {
   transform: translateY(-2px);
 }
 
-/* Mensagens de feedback */
 .message {
   padding: 15px 25px;
   border-radius: 8px;
@@ -100,7 +93,6 @@ html, body, #root {
   border: 1px solid #ffccc7;
 }
 
-/* Layout do conteúdo */
 .content-layout {
   display: grid;
   grid-template-columns: 400px 1fr;
@@ -109,7 +101,6 @@ html, body, #root {
   align-items: flex-start;
 }
 
-/* Painéis */
 .form-panel,
 .list-panel {
   background: #ffffff;
@@ -134,7 +125,6 @@ html, body, #root {
   padding-bottom: 1rem;
 }
 
-/* Formulário de Criação */
 .form-panel form {
   display: flex;
   flex-direction: column;
@@ -170,65 +160,70 @@ html, body, #root {
   outline: none;
 }
 
-/* Container de botões */
 .form-buttons {
   margin-top: auto;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  align-items: center;
 }
 
-/* Botão de adicionar setor */
+.btn-primary,
+.btn-export {
+  padding: 0.6rem 1.2rem !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  border: none !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+  width: 280px !important;
+  max-width: 100% !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  line-height: 1.2 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  color: #fff !important;
+}
+
 .btn-primary {
-  background-color: #4f46e5;
-  color: white;
-  padding: 0.65rem 1.25rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border-radius: 8px;
-  cursor: pointer;
-  border: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(79, 70, 229, 0.3);
-  width: 100%;
+  background-color: #4f46e5 !important;
 }
 
 .btn-primary:hover {
-  background-color: #4338ca;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 10px rgba(79, 70, 229, 0.4);
+  background-color: #4338ca !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 10px rgba(79, 70, 229, 0.4) !important;
 }
 
-/* Botão de Exportar Excel */
 .btn-export {
-  background: #1D6F42;
-  color: white;
-  border: none;
-  padding: 0.65rem 1.25rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  user-select: none;
-  box-shadow: 0 4px 6px rgba(29, 111, 66, 0.3);
-  width: 100%;
+  background: #1D6F42 !important;
 }
 
 .btn-export:hover {
-  background: #165934;
-  box-shadow: 0 6px 12px rgba(29, 111, 66, 0.4);
-  transform: translateY(-2px);
+  background: #165934 !important;
+  box-shadow: 0 6px 12px rgba(29, 111, 66, 0.4) !important;
+  transform: translateY(-2px) !important;
 }
 
-/* Lista de setores existentes */
+.btn-export:disabled {
+  background: #9ca3af !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
 .list-panel {
   display: flex;
   flex-direction: column;
   position: relative;
 }
 
-/* Lista de itens (Grid de Cards) */
 .item-list {
   list-style: none;
   padding: 0;
@@ -276,7 +271,6 @@ html, body, #root {
   margin-top: 4px;
 }
 
-/* Botão de excluir */
 .btn-delete {
   background-color: #fee2e2;
   border: none;
@@ -300,7 +294,6 @@ html, body, #root {
   transform: scale(1.1);
 }
 
-/* Scrollbar customizada */
 .list-panel::-webkit-scrollbar,
 .item-list::-webkit-scrollbar {
   width: 8px;
@@ -317,10 +310,13 @@ html, body, #root {
   background-color: transparent;
 }
 
-/* Responsividade */
 @media (max-width: 992px) {
   .content-layout {
     grid-template-columns: 1fr;
+  }
+  
+  .page-header h1 {
+    font-size: 2rem;
   }
 }
 
@@ -329,8 +325,43 @@ html, body, #root {
     padding: 1rem;
     padding-top: 80px;
   }
+  
   .page-header {
     flex-direction: column;
+    align-items: center;
+  }
+  
+  .page-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .item-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-panel,
+  .list-panel {
+    padding: 1.5rem;
+  }
+  
+  .btn-primary,
+  .btn-export {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .item {
+    flex-direction: column;
+    gap: 1rem;
     align-items: flex-start;
+  }
+  
+  .btn-delete {
+    width: 100%;
   }
 }
