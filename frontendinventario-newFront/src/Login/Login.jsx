@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Importa o Link para navegação
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
-import './Login.css'; // Estilos locais para este componente
+import './Login.css';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -10,11 +10,13 @@ export default function Login() {
   const [erro, setErro] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   async function handleLogin(e) {
     e.preventDefault();
     setErro('');
     setLoading(true);
+    
     try {
       const res = await api.post('/auth/login', { email, senha });
       const { accessToken } = res.data;
@@ -25,57 +27,94 @@ export default function Login() {
         setErro('Resposta de login inválida do servidor.');
       }
     } catch (err) {
-      setErro(err.response?.data?.message || 'Falha no login. Verifique suas credenciais.');
+      console.error('Erro no login:', err);
+      setErro('Credencial ou senha inválida. Tente novamente.');
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="login-container">
-      <form className="login-form" onSubmit={handleLogin}>
-        <h2>Entrar</h2>
+    <div className="login-page">
+      <header className="login-header">
+        <div className="header-text-centered">
+          <h1 className="header-title">Inventário LGPD</h1>
+          <p className="header-subtitle">Gestão Inteligente e Segurança de Dados</p>
+        </div>
+      </header>
 
-        {erro && (
-          <div className="error-message" style={{ color: 'red', marginBottom: '10px' }}>
-            {erro}
+      <main className="login-content">
+        <div className="login-card">
+          <h2 className="login-card-title">Fazer login:</h2>
+
+          {erro && (
+            <div className="login-error-message">
+              {erro}
+            </div>
+          )}
+
+          <form onSubmit={handleLogin}>
+            <div className="login-form-group">
+              <label htmlFor="email" className="login-form-label">
+                Email:
+              </label>
+              <input
+                id="email"
+                type="email"
+                className="login-form-input"
+                placeholder="E-mail ou usuário"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="username"
+              />
+            </div>
+
+            <div className="login-form-group">
+              <label htmlFor="senha" className="login-form-label">
+                Senha:
+              </label>
+              <input
+                id="senha"
+                type="password"
+                className="login-form-input"
+                placeholder="Senha"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                required
+                autoComplete="current-password"
+              />
+            </div>
+
+            <Link to="/forgot-password" className="forgot-password-link">
+              Esqueceu sua senha?
+            </Link>
+
+            <button
+              type="submit"
+              className="login-submit-button"
+              disabled={loading}
+            >
+              {loading ? 'Entrando...' : 'Fazer login'}
+            </button>
+          </form>
+
+          <div className="signup-link-container">
+            Ainda não tenho conta{' '}
+            <Link to="/request-access" className="signup-link">
+              Ainda não tenho conta
+            </Link>
           </div>
-        )}
-
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-            autoComplete="username"
-          />
         </div>
+      </main>
 
-        <div>
-          <label htmlFor="senha">Senha:</label>
-          <input
-            id="senha"
-            type="password"
-            value={senha}
-            onChange={e => setSenha(e.target.value)}
-            required
-            autoComplete="current-password"
-          />
-        </div>
-
-        <button type="submit" disabled={loading}>
-          {loading ? 'Entrando...' : 'Entrar'}
-        </button>
-
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          <span>
-            Não tem uma conta? <Link to="/request-access">Solicite seu acesso aqui</Link>
-          </span>
-        </div>
-      </form>
+      <footer className="login-footer">
+        <img 
+          src="/assets/logo.png" 
+          alt="Logo Footer" 
+          className="footer-logo"
+        />
+      </footer>
     </div>
   );
 }

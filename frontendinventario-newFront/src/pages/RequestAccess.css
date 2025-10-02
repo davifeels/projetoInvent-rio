@@ -1,125 +1,338 @@
-/* Estilos globais para a página */
-body {
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+* {
   margin: 0;
   padding: 0;
-  font-family: 'Poppins', sans-serif;
-  background-color: #f0f2f5; /* Fundo cinza suave */
-}
-
-/* Container principal da página */
-.request-access-container {
-  display: flex;
-  justify-content: center; /* Centraliza horizontalmente */
-  align-items: center; /* Centraliza verticalmente */
-  min-height: 100vh; /* Ocupa a altura total da tela */
-  padding: 2rem;
-  box-sizing: border-box; /* Garante que padding não adicione largura extra */
-}
-
-/* Estilos do formulário (o painel branco) */
-.request-access-container form {
-  background-color: #ffffff;
-  padding: 3rem; /* Aumenta o espaçamento interno */
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra mais suave e visível */
-  width: 100%;
-  max-width: 500px; /* Define uma largura máxima elegante para o formulário */
-}
-
-/* Estilo do título */
-.request-access-container h2 {
-  font-size: 2rem;
-  color: #333;
-  text-align: center;
-  margin-bottom: 2rem;
-  font-weight: 600;
-}
-
-/* Estilo para cada grupo de campo (label + input) */
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-  color: #555;
-  font-weight: 500;
-}
-
-/* Estilo para todos os inputs e selects */
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 1rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  color: #333;
-  background-color: #f9f9f9;
-  transition: all 0.3s ease;
   box-sizing: border-box;
 }
 
-.form-group input:focus,
-.form-group select:focus {
-  border-color: #6c63ff; /* Cor roxa no foco */
-  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.25);
-  outline: none;
-  background-color: #fff;
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Estilo do botão de submit */
-.btn-submit {
-  background-color: #6c63ff; /* Roxo principal */
-  color: white;
-  padding: 1rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 1.2rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.request-access-page {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  overflow-x: hidden;
+}
+
+/* Header - MESMO TAMANHO DO LOGIN */
+.request-access-header {
   width: 100%;
-  margin-top: 1rem;
+  background: linear-gradient(135deg, #2B1B4D 0%, #3D2864 50%, #2B1B4D 100%);
+  padding: 1.75rem 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  min-height: 100px;
+  overflow: hidden;
 }
 
-.btn-submit:hover {
-  background-color: #5851d8;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+.request-header-text-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.2rem;
+  z-index: 10;
 }
 
-.link-login {
+/* TÍTULO IGUAL AO LOGIN */
+.request-header-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff !important;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  opacity: 1 !important;
+}
+
+.request-header-subtitle {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.95) !important;
+  opacity: 1 !important;
+}
+
+/* BOTÃO LOGIN REMOVIDO - CLASSE NÃO USADA MAIS */
+
+/* Conteúdo */
+.request-access-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background: #f8f9fc;
+}
+
+.request-access-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem 2rem;
+  width: 100%;
+  max-width: 580px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+}
+
+.request-access-card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1.75rem;
+}
+
+.request-form-group {
+  margin-bottom: 1rem;
+}
+
+.request-form-row-passwords {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0;
+}
+
+.request-form-group-password {
+  flex: 1;
+  margin-bottom: 1rem;
+}
+
+.request-form-label {
   display: block;
-  text-align: center;
-  margin-top: 1.5rem;
-  font-size: 1rem;
-  color: #6c63ff;
-  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
 }
 
-.link-login:hover {
-  text-decoration: underline;
+.request-form-input,
+.request-form-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background-color: #f9fafb;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+  color: #1f2937;
+  appearance: none;
 }
 
-/* Mensagens de feedback */
-.form-global-error, .form-global-success {
-  padding: 1rem;
+.request-form-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+.request-form-input::placeholder {
+  color: #9ca3af;
+}
+
+.request-form-input:focus,
+.request-form-select:focus {
+  outline: none;
+  border-color: #3D2864;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(61, 38, 100, 0.1);
+}
+
+.request-form-input:disabled,
+.request-form-select:disabled {
+  background-color: #e5e7eb;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.request-error-message,
+.request-success-message {
+  padding: 0.75rem 1rem;
   border-radius: 8px;
-  margin-bottom: 1.5rem;
-  font-size: 1rem;
-  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
 }
 
-.form-global-error {
+.request-error-message {
   background-color: #fef2f2;
-  color: #b91c1c;
+  color: #dc2626;
   border: 1px solid #fecaca;
 }
 
-.form-global-success {
+.request-success-message {
   background-color: #f0fdf4;
-  color: #166534;
+  color: #16a34a;
   border: 1px solid #bbf7d0;
+}
+
+.request-submit-button {
+  width: 100%;
+  padding: 0.9rem;
+  background: linear-gradient(135deg, #2B1B4D 0%, #3D2864 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(43, 27, 77, 0.25);
+  margin-top: 0.5rem;
+}
+
+.request-submit-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(43, 27, 77, 0.35);
+}
+
+.request-submit-button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.login-link-container {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.login-link {
+  color: #3D2864;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-link:hover {
+  text-decoration: underline;
+}
+
+/* Footer - MESMO TAMANHO DO LOGIN */
+.request-access-footer {
+  width: 100%;
+  background: linear-gradient(135deg, #2B1B4D 0%, #3D2864 100%);
+  padding: 1.75rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  min-height: 100px;
+}
+
+.request-footer-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .request-access-header {
+    padding: 1rem 1.5rem;
+    min-height: 80px;
+  }
+
+  .request-header-title {
+    font-size: 1.3rem;
+  }
+
+  .request-header-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .request-access-card {
+    padding: 1.75rem 1.5rem;
+    max-width: 100%;
+  }
+
+  .request-form-row-passwords {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .request-access-footer {
+    padding: 1rem;
+    min-height: 80px;
+  }
+
+  .request-footer-logo {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+@media (max-width: 480px) {
+  .request-access-header {
+    padding: 0.75rem 1.25rem;
+    min-height: 70px;
+  }
+
+  .request-header-title {
+    font-size: 1.1rem;
+  }
+
+  .request-header-subtitle {
+    font-size: 0.75rem;
+  }
+
+  .request-access-content {
+    padding: 1.25rem;
+  }
+
+  .request-access-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .request-access-card-title {
+    font-size: 1.35rem;
+  }
+
+  .request-access-footer {
+    padding: 0.75rem;
+    min-height: 70px;
+  }
+
+  .request-footer-logo {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 360px) {
+  .request-access-header {
+    padding: 0.6rem 1rem;
+    min-height: 60px;
+  }
+
+  .request-header-title {
+    font-size: 1rem;
+  }
+
+  .request-header-subtitle {
+    font-size: 0.7rem;
+  }
+
+  .request-access-card-title {
+    font-size: 1.25rem;
+  }
+
+  .request-access-footer {
+    padding: 0.6rem;
+    min-height: 60px;
+  }
+
+  .request-footer-logo {
+    width: 35px;
+    height: 35px;
+  }
 }
