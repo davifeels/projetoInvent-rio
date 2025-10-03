@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import logo from '../assets/logo.png';
 import './Login.css';
 
 export default function Login() {
@@ -102,7 +103,7 @@ export default function Login() {
           <div className="signup-link-container">
             Ainda não tenho conta{' '}
             <Link to="/request-access" className="signup-link">
-              Ainda não tenho conta
+              Criar conta
             </Link>
           </div>
         </div>
@@ -110,7 +111,7 @@ export default function Login() {
 
       <footer className="login-footer">
         <img 
-          src="/assets/logo.png" 
+          src={logo}
           alt="Logo Footer" 
           className="footer-logo"
         />

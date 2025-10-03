@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { fetchSetores } from '../services/setoresService';
 import { fetchFuncoes } from '../services/funcoesService';
 import api from '../api/axios';
+import logo from '../assets/logo.png';
 import './RequestAccess.css';
 
 export default function RequestAccess() {
@@ -84,7 +85,6 @@ export default function RequestAccess() {
           <h1 className="request-header-title">Inventário LGPD</h1>
           <p className="request-header-subtitle">Gestão Inteligente e Segurança de Dados</p>
         </div>
-        {/* BOTÃO LOGIN REMOVIDO */}
       </header>
 
       <main className="request-access-content">
@@ -234,7 +234,7 @@ export default function RequestAccess() {
           <div className="login-link-container">
             Já tenho conta{' '}
             <Link to="/login" className="login-link">
-              Já tenho conta
+              Fazer login
             </Link>
           </div>
         </div>
@@ -242,12 +242,9 @@ export default function RequestAccess() {
 
       <footer className="request-access-footer">
         <img 
-          src="/assets/logo.png" 
+          src={logo}
           alt="Logo Footer" 
           className="request-footer-logo"
-          onError={(e) => {
-            e.target.style.display = 'none';
-          }}
         />
       </footer>
     </div>
