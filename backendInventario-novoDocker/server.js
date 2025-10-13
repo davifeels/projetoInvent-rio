@@ -25,37 +25,61 @@ dbPool.getConnection()
 //                              MIDDLEWARES
 // =================================================================
 
-// --- Configuração de Segurança (CORS e Helmet) ---
+// ✅ CORREÇÃO COMPLETA DO CORS
+const allowedOrigins = [
+  'http://localhost:3000',        // React local
+  'http://localhost:3001',        // Frontend alternativo
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:3001',
+  'http://172.19.0.2:3000',
+  'http://10.0.11.88:3001',
+  process.env.CORS_ORIGIN,        // Produção
+  process.env.FRONTEND_URL        // Extra
+].filter(Boolean);
+
 const corsOptions = {
-  origin: [
-    'http://localhost:3001',       // frontend local
-    'http://172.19.0.2:3000', 
-    'http://10.0.11.88:3001',      // backend docker/local network
-    process.env.CORS_ORIGIN        // URL adicional em produção
-  ].filter(Boolean),
-  credentials: true,              // permite cookies e headers de autenticação
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
+  origin: function (origin, callback) {
+    // Permite requisições sem origin (Postman, mobile apps, etc)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.warn(`⚠️ Origem bloqueada pelo CORS: ${origin}`);
+      callback(new Error('Não permitido pelo CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin'
+  ],
+  exposedHeaders: ['Content-Disposition'], // Para download de Excel
+  optionsSuccessStatus: 200,
+  preflightContinue: false
 };
 
-// Aplica CORS e Helmet
+// Aplica CORS ANTES de tudo
 app.use(cors(corsOptions));
-app.use(helmet());
 
-// --- Middlewares para processar JSON e URL-encoded ---
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// ✅ ADICIONA HELMET DEPOIS DO CORS
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" }
+}));
 
-// --- Middleware para responder preflight OPTIONS em todas as rotas ---
+// Parse JSON e URL-encoded
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// ✅ LOGGING DE REQUISIÇÕES (útil para debug)
 app.use((req, res, next) => {
-  if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.sendStatus(204); // sem conteúdo
-  } else {
-    next();
-  }
+  console.log(`📥 ${req.method} ${req.path} - Origin: ${req.headers.origin || 'sem origin'}`);
+  next();
 });
 
 // =================================================================
@@ -73,12 +97,21 @@ const auditoriaRoutes = require('./routes/auditoria');
 const inventarioLgpdRoutes = require('./routes/inventarioLgpd');
 const adminRoutes = require('./routes/admin');
 
-// Rotas públicas
+// ✅ ROTA DE HEALTH CHECK
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    cors: 'enabled'
+  });
+});
+
+// Rotas públicas (SEM autenticação)
 app.use('/api/auth', authRoutes);
 app.use('/api/funcoes', funcoesRoutes);
 app.use('/api/setores', setoresRoutes);
 
-// Rotas privadas (autenticação + perfil)
+// Rotas privadas (COM autenticação)
 app.use('/api/usuarios', autenticarToken, usuarioRoutes);
 app.use('/api/cadastros', autenticarToken, cadastroRoutes);
 app.use('/api/inventario', autenticarToken, inventarioRoutes);
@@ -90,12 +123,31 @@ app.use('/api/admin', autenticarToken, adminRoutes);
 //                      TRATAMENTO DE ERROS E 404
 // =================================================================
 app.use((req, res, next) => {
-  res.status(404).json({ message: 'Endpoint não encontrado.' });
+  res.status(404).json({ 
+    success: false,
+    message: 'Endpoint não encontrado.',
+    path: req.path 
+  });
 });
 
+// ✅ HANDLER DE ERROS MELHORADO
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Ocorreu um erro interno no servidor.' });
+  console.error('❌ Erro capturado:', err);
+  
+  // Erro de CORS
+  if (err.message === 'Não permitido pelo CORS') {
+    return res.status(403).json({ 
+      success: false,
+      message: 'Origem não permitida pelo CORS',
+      origin: req.headers.origin 
+    });
+  }
+  
+  res.status(err.status || 500).json({ 
+    success: false,
+    message: err.message || 'Erro interno no servidor.',
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+  });
 });
 
 // =================================================================
@@ -103,15 +155,29 @@ app.use((err, req, res, next) => {
 // =================================================================
 const PORT = process.env.PORT || 3000;
 
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Servidor backend rodando na porta ${PORT}`);
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log('\n🚀 ====================================');
+  console.log(`🚀 Servidor rodando na porta ${PORT}`);
+  console.log(`🚀 Ambiente: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🚀 CORS habilitado para:`);
+  allowedOrigins.forEach(origin => console.log(`   - ${origin}`));
+  console.log('🚀 ====================================\n');
 });
 
 server.on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
-    console.error(`❌ Porta ${PORT} já está em uso. Finalize o processo ou use outra porta.`);
+    console.error(`❌ Porta ${PORT} já está em uso.`);
     process.exit(1);
   } else {
     throw err;
   }
+});
+
+// ✅ GRACEFUL SHUTDOWN
+process.on('SIGTERM', () => {
+  console.log('⚠️ SIGTERM recebido, fechando servidor...');
+  server.close(() => {
+    console.log('✅ Servidor fechado com sucesso');
+    process.exit(0);
+  });
 });

@@ -7,10 +7,19 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=db_colaboradores
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=davi080401
+      - DB_NAME=cadastro_colaboradores
+      - JWT_SECRET=H9u7V@r#Lp0x!e2KdZsM
+      - JWT_REFRESH_SECRET=A8!rGv5%Lm3#Tt2QcXzP
+      - PORT=3000
+      - NODE_ENV=production
+      - CORS_ORIGIN=http://localhost:3000,http://localhost:3001
     restart: always
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   db:
     image: mysql:8.0
@@ -21,8 +30,6 @@ services:
       - mysql_data:/var/lib/mysql
     ports:
       - "3306:3306"
-    env_file:
-      - .env
     environment:
       - MYSQL_ROOT_PASSWORD=davi080401
       - MYSQL_DATABASE=cadastro_colaboradores
@@ -30,6 +37,11 @@ services:
       - MYSQL_CHARACTER_SET_SERVER=utf8mb4
       - MYSQL_COLLATION_SERVER=utf8mb4_unicode_ci
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pdavi080401"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
 volumes:
   mysql_data:

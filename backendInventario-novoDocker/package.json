@@ -19,17 +19,12 @@
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
-    "mongoose": "^8.16.0",
     "mysql2": "^3.14.1",
     "nodemailer": "^6.9.14",
-    "sequelize": "^6.37.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  }
 }
