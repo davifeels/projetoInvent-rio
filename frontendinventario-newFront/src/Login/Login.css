@@ -21,27 +21,37 @@ body {
   overflow-x: hidden;
 }
 
-/* Header sem botão */
+/* Header com logo, título e botão Login */
 .login-header {
   width: 100%;
   background: linear-gradient(135deg, #2B1B4D 0%, #3D2864 50%, #2B1B4D 100%);
-  padding: 1.75rem 2.5rem;
+  padding: 1.5rem 2.5rem;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
   min-height: 100px;
-  overflow: hidden;
 }
 
-.header-text-centered {
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.header-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.header-text {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
   gap: 0.2rem;
-  z-index: 10;
 }
 
 .login-header .header-title {
@@ -54,6 +64,7 @@ body {
   opacity: 1 !important;
   background: none !important;
   -webkit-text-fill-color: #ffffff !important;
+  margin: 0;
 }
 
 .login-header .header-subtitle {
@@ -61,6 +72,26 @@ body {
   font-weight: 400;
   color: rgba(255, 255, 255, 0.95) !important;
   opacity: 1 !important;
+  margin: 0;
+}
+
+.header-login-button {
+  background: #ffffff;
+  color: #2B1B4D;
+  padding: 0.7rem 2rem;
+  border-radius: 50px;
+  border: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 100px;
+}
+
+.header-login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Conteúdo */
@@ -206,13 +237,25 @@ body {
   width: 50px;
   height: 50px;
   object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
-/* Responsivo - CAIXAS ROXAS MENORES */
+/* Responsivo */
 @media (max-width: 768px) {
   .login-header {
     padding: 1rem 1.5rem;
     min-height: 80px;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .header-left {
+    gap: 0.75rem;
+  }
+
+  .header-logo {
+    width: 45px;
+    height: 45px;
   }
 
   .login-header .header-title {
@@ -221,6 +264,11 @@ body {
 
   .login-header .header-subtitle {
     font-size: 0.8rem;
+  }
+
+  .header-login-button {
+    padding: 0.6rem 1.75rem;
+    font-size: 0.9rem;
   }
 
   .login-card {
@@ -244,12 +292,22 @@ body {
     min-height: 70px;
   }
 
+  .header-logo {
+    width: 40px;
+    height: 40px;
+  }
+
   .login-header .header-title {
     font-size: 1.1rem;
   }
 
   .login-header .header-subtitle {
     font-size: 0.75rem;
+  }
+
+  .header-login-button {
+    padding: 0.55rem 1.5rem;
+    font-size: 0.85rem;
   }
 
   .login-content {
@@ -281,12 +339,22 @@ body {
     min-height: 60px;
   }
 
+  .header-logo {
+    width: 35px;
+    height: 35px;
+  }
+
   .login-header .header-title {
     font-size: 1rem;
   }
 
   .login-header .header-subtitle {
     font-size: 0.7rem;
+  }
+
+  .header-login-button {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.8rem;
   }
 
   .login-footer {

@@ -38,10 +38,14 @@ export default function Login() {
   return (
     <div className="login-page">
       <header className="login-header">
-        <div className="header-text-centered">
-          <h1 className="header-title">Inventário LGPD</h1>
-          <p className="header-subtitle">Gestão Inteligente e Segurança de Dados</p>
+        <div className="header-left">
+          <img src={logo} alt="Logo" className="header-logo" />
+          <div className="header-text">
+            <h1 className="header-title">Inventário LGPD</h1>
+            <p className="header-subtitle">Gestão Inteligente e Segurança de Dados</p>
+          </div>
         </div>
+        <button className="header-login-button">Login</button>
       </header>
 
       <main className="login-content">
@@ -57,7 +61,7 @@ export default function Login() {
           <form onSubmit={handleLogin}>
             <div className="login-form-group">
               <label htmlFor="email" className="login-form-label">
-                Email:
+                E-mail:
               </label>
               <input
                 id="email"

@@ -81,10 +81,14 @@ export default function RequestAccess() {
   return (
     <div className="request-access-page">
       <header className="request-access-header">
-        <div className="request-header-text-centered">
-          <h1 className="request-header-title">Inventário LGPD</h1>
-          <p className="request-header-subtitle">Gestão Inteligente e Segurança de Dados</p>
+        <div className="header-left">
+          <img src={logo} alt="Logo" className="header-logo" />
+          <div className="header-text">
+            <h1 className="request-header-title">Inventário LGPD</h1>
+            <p className="request-header-subtitle">Gestão Inteligente e Segurança de Dados</p>
+          </div>
         </div>
+        <Link to="/login" className="header-login-button">Login</Link>
       </header>
 
       <main className="request-access-content">
@@ -114,23 +118,6 @@ export default function RequestAccess() {
                 name="nome"
                 className="request-form-input"
                 value={formData.nome}
-                onChange={handleChange}
-                required
-                disabled={loading || feedback.sucesso}
-                autoComplete="off"
-              />
-            </div>
-
-            <div className="request-form-group">
-              <label htmlFor="email" className="request-form-label">
-                E-mail
-              </label>
-              <input
-                id="email"
-                type="email"
-                name="email"
-                className="request-form-input"
-                value={formData.email}
                 onChange={handleChange}
                 required
                 disabled={loading || feedback.sucesso}
@@ -180,6 +167,23 @@ export default function RequestAccess() {
                   </option>
                 ))}
               </select>
+            </div>
+
+            <div className="request-form-group">
+              <label htmlFor="email" className="request-form-label">
+                E-mail
+              </label>
+              <input
+                id="email"
+                type="email"
+                name="email"
+                className="request-form-input"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                disabled={loading || feedback.sucesso}
+                autoComplete="off"
+              />
             </div>
 
             <div className="request-form-row-passwords">
