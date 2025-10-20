@@ -1,86 +1,192 @@
 /* src/components/BackButton.css */
 
 .back-button {
-  position: fixed !important;
-  top: 20px !important;
-  left: 20px !important;
+  /* Posição no fluxo normal do documento - NÃO segue o scroll */
+  position: static;
+  
+  /* Layout */
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 0.7rem 1.2rem;
+  
+  /* TAMANHO FIXO E CONSISTENTE EM TODAS AS TELAS */
+  padding: 0.75rem 1.25rem !important;
+  margin-bottom: 1.5rem !important;
+  width: 120px !important;
+  min-width: 120px !important;
+  max-width: 120px !important;
+  height: 45px !important;
+  min-height: 45px !important;
+  max-height: 45px !important;
+  
+  /* Visual */
   background-color: #3498db;
   color: #ffffff;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-weight: 600;
   font-size: 0.95rem;
+  
+  /* Comportamento */
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  z-index: 10000 !important;
-  width: auto;
-  max-width: 150px;
+  user-select: none;
+  white-space: nowrap;
+  
+  /* Sombra e transição */
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Z-index alto */
+  z-index: 100;
+  
+  /* Centralização do conteúdo */
+  box-sizing: border-box;
 }
 
 .back-button:hover {
   background-color: #2980b9;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
 }
 
 .back-button:active {
-  transform: translateY(-1px);
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+}
+
+.back-button:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
 }
 
 .back-arrow {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: bold;
+  line-height: 1;
+  display: flex;
+  align-items: center;
 }
 
 .back-text {
   font-weight: 600;
+  line-height: 1;
+  font-size: 0.95rem;
 }
 
-/* Responsividade - mantém position fixed em todas as resoluções */
-@media (max-width: 992px) {
+/* Previne seleção */
+.back-button * {
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ============================================
+   RESPONSIVIDADE - MANTÉM TAMANHO CONSISTENTE
+============================================ */
+
+/* Tablets e laptops menores */
+@media (max-width: 1024px) {
   .back-button {
-    padding: 0.65rem 1.1rem;
-    font-size: 0.92rem;
+    padding: 0.75rem 1.25rem !important;
+    width: 120px !important;
+    min-width: 120px !important;
+    max-width: 120px !important;
+    height: 45px !important;
+    min-height: 45px !important;
+    max-height: 45px !important;
+    font-size: 0.95rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+  
+  .back-arrow {
+    font-size: 1.4rem;
+  }
+  
+  .back-text {
+    font-size: 0.95rem;
   }
 }
 
+/* Tablets portrait e mobile landscape */
 @media (max-width: 768px) {
   .back-button {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
-    max-width: 130px;
+    padding: 0.75rem 1.25rem !important;
+    width: 120px !important;
+    min-width: 120px !important;
+    max-width: 120px !important;
+    height: 45px !important;
+    min-height: 45px !important;
+    max-height: 45px !important;
+    font-size: 0.95rem !important;
+    margin-bottom: 1.5rem !important;
+    border-radius: 10px;
   }
   
   .back-arrow {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
+  }
+  
+  .back-text {
+    font-size: 0.95rem;
   }
 }
 
+/* Mobile portrait */
 @media (max-width: 480px) {
   .back-button {
-    padding: 0.55rem 0.9rem;
-    font-size: 0.85rem;
-    max-width: 120px;
+    padding: 0.75rem 1.25rem !important;
+    width: 120px !important;
+    min-width: 120px !important;
+    max-width: 120px !important;
+    height: 45px !important;
+    min-height: 45px !important;
+    max-height: 45px !important;
+    font-size: 0.95rem !important;
+    margin-bottom: 1.5rem !important;
+    gap: 0.5rem;
+    border-radius: 10px;
   }
   
   .back-arrow {
-    font-size: 1.1rem;
+    font-size: 1.4rem;
+  }
+  
+  .back-text {
+    font-size: 0.95rem;
   }
 }
 
+/* Telas muito pequenas */
 @media (max-width: 360px) {
   .back-button {
-    padding: 0.5rem 0.8rem;
-    font-size: 0.8rem;
-    max-width: 110px;
+    padding: 0.75rem 1.25rem !important;
+    width: 120px !important;
+    min-width: 120px !important;
+    max-width: 120px !important;
+    height: 45px !important;
+    min-height: 45px !important;
+    max-height: 45px !important;
+    font-size: 0.95rem !important;
+    margin-bottom: 1.5rem !important;
+    gap: 0.5rem;
   }
   
   .back-arrow {
-    font-size: 1rem;
+    font-size: 1.4rem;
+  }
+  
+  .back-text {
+    font-size: 0.95rem;
+  }
+}
+
+/* Modo escuro */
+@media (prefers-color-scheme: dark) {
+  .back-button {
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.5);
+  }
+  
+  .back-button:hover {
+    box-shadow: 0 6px 16px rgba(52, 152, 219, 0.6);
   }
 }

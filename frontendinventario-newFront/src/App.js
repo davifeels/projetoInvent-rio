@@ -113,7 +113,7 @@ export default function App() {
       <Route
         path="/admin/inventarios"
         element={
-          <PrivateRoute allowedProfiles={[PROFILE_MASTER_ID]}>
+          <PrivateRoute allowedProfiles={[PROFILE_MASTER_ID, PROFILE_GESTOR_ID]}>
             <InventarioMasterView />
           </PrivateRoute>
         }

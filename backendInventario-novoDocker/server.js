@@ -25,62 +25,27 @@ dbPool.getConnection()
 //                              MIDDLEWARES
 // =================================================================
 
-// ✅ CORREÇÃO COMPLETA DO CORS
-const allowedOrigins = [
-  'http://localhost:3000',        // React local
-  'http://localhost:3001',        // Frontend alternativo
-  'http://127.0.0.1:3000',
-  'http://127.0.0.1:3001',
-  'http://172.19.0.2:3000',
-  'http://10.0.11.88:3001',
-  process.env.CORS_ORIGIN,        // Produção
-  process.env.FRONTEND_URL        // Extra
-].filter(Boolean);
-
+// ✅ CORS SUPER SIMPLIFICADO - APENAS LOCALHOST:3001
 const corsOptions = {
-  origin: function (origin, callback) {
-    // Permite requisições sem origin (Postman, mobile apps, etc)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.warn(`⚠️ Origem bloqueada pelo CORS: ${origin}`);
-      callback(new Error('Não permitido pelo CORS'));
-    }
-  },
+  origin: 'http://localhost:3001', // 🔥 APENAS UMA URL
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: [
-    'Content-Type',
-    'Authorization',
-    'X-Requested-With',
-    'Accept',
-    'Origin'
-  ],
-  exposedHeaders: ['Content-Disposition'], // Para download de Excel
-  optionsSuccessStatus: 200,
-  preflightContinue: false
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Content-Disposition'],
+  optionsSuccessStatus: 200
 };
 
-// Aplica CORS ANTES de tudo
 app.use(cors(corsOptions));
 
-// ✅ ADICIONA HELMET DEPOIS DO CORS
+// ✅ HELMET (mais permissivo)
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
-  crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" }
+  crossOriginOpenerPolicy: { policy: "unsafe-none" }
 }));
 
-// Parse JSON e URL-encoded
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
-// ✅ LOGGING DE REQUISIÇÕES (útil para debug)
-app.use((req, res, next) => {
-  console.log(`📥 ${req.method} ${req.path} - Origin: ${req.headers.origin || 'sem origin'}`);
-  next();
-});
+// ✅ AUMENTA O LIMITE DE HEADERS E BODY
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb', parameterLimit: 50000 }));
 
 // =================================================================
 //                                 ROTAS
@@ -102,8 +67,14 @@ app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 
     timestamp: new Date().toISOString(),
-    cors: 'enabled'
+    cors: 'enabled for http://localhost:3001'
   });
+});
+
+// ✅ LOGGING DE REQUISIÇÕES
+app.use((req, res, next) => {
+  console.log(`🔥 ${req.method} ${req.path} - Origin: ${req.headers.origin || 'sem origin'}`);
+  next();
 });
 
 // Rotas públicas (SEM autenticação)
@@ -130,18 +101,8 @@ app.use((req, res, next) => {
   });
 });
 
-// ✅ HANDLER DE ERROS MELHORADO
 app.use((err, req, res, next) => {
   console.error('❌ Erro capturado:', err);
-  
-  // Erro de CORS
-  if (err.message === 'Não permitido pelo CORS') {
-    return res.status(403).json({ 
-      success: false,
-      message: 'Origem não permitida pelo CORS',
-      origin: req.headers.origin 
-    });
-  }
   
   res.status(err.status || 500).json({ 
     success: false,
@@ -158,11 +119,12 @@ const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, '0.0.0.0', () => {
   console.log('\n🚀 ====================================');
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
-  console.log(`🚀 Ambiente: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🚀 CORS habilitado para:`);
-  allowedOrigins.forEach(origin => console.log(`   - ${origin}`));
+  console.log(`🚀 CORS habilitado APENAS para: http://localhost:3001`);
   console.log('🚀 ====================================\n');
 });
+
+// ✅ REMOVE LIMITE DE HEADERS
+server.maxHeadersCount = 0;
 
 server.on('error', (err) => {
   if (err.code === 'EADDRINUSE') {

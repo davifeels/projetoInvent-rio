@@ -1,7 +1,10 @@
 import axios from 'axios';
 
-// ✅ URL do backend
+// ✅ URL do backend (PORTA CORRETA 3000)
 const API_BASE_URL = 'http://localhost:3000/api';
+
+// ✅ Basename da aplicação (removido pois não estamos usando mais)
+const APP_BASENAME = '';
 
 // ✅ Cria instância do axios com configurações
 const api = axios.create({
@@ -17,13 +20,24 @@ const api = axios.create({
 const PUBLIC_ROUTES = [
   '/auth/login',
   '/auth/solicitar-acesso',
-  '/setores',
-  '/funcoes',
+  // '/setores' e '/funcoes' apenas GET podem ser públicos
+  // POST, PUT, DELETE devem exigir autenticação
 ];
 
 // ✅ Verifica se a rota é pública
-const isPublicRoute = (url) => {
-  return PUBLIC_ROUTES.some(route => url.includes(route));
+const isPublicRoute = (url, method) => {
+  // Rotas completamente públicas
+  if (PUBLIC_ROUTES.some(route => url.includes(route))) {
+    return true;
+  }
+  
+  // GET em /setores e /funcoes é público (para listar)
+  // Mas POST, PUT, DELETE requerem autenticação
+  if (method === 'GET' && (url.includes('/setores') || url.includes('/funcoes'))) {
+    return true;
+  }
+  
+  return false;
 };
 
 // ✅ INTERCEPTOR: Adiciona token antes de enviar requisição
@@ -34,6 +48,8 @@ api.interceptors.request.use(
       const token = localStorage.getItem('accessToken');
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
+      } else {
+        console.warn('⚠️ Token não encontrado para rota protegida:', config.url);
       }
     }
 
@@ -64,15 +80,16 @@ api.interceptors.response.use(
       console.error(`❌ Erro ${status}:`, data);
 
       // Token inválido ou expirado
-      if (status === 401) {
+      if (status === 401 || status === 431) {
         console.warn('⚠️ Sessão expirada. Redirecionando para login...');
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('usuario');
         
-        // Redireciona para login (ajuste conforme seu router)
-        if (window.location.pathname !== '/login') {
-          window.location.href = '/login';
+        // 🔥 LIMPA APENAS O QUE EXISTE
+        localStorage.removeItem('accessToken');
+        
+        // 🔥 Redireciona RESPEITANDO o basename
+        const loginPath = `${APP_BASENAME}/login`;
+        if (window.location.pathname !== loginPath) {
+          window.location.href = loginPath;
         }
       }
 

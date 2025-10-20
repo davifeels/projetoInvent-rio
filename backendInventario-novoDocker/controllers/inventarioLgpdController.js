@@ -61,7 +61,6 @@ const getInventario = async (req, res) => {
         }
     } catch (error) {
         console.error("Erro ao buscar inventário pessoal (MySQL):", error);
-        // ✅ CORREÇÃO: Ordem correta dos parâmetros
         await registrarAuditoria(usuarioId, 'ERRO_BUSCAR_INVENTARIO', setor_id, { 
             ip: req.ip, 
             erro: error.message 
@@ -93,6 +92,8 @@ const cadastrarOuAtualizarInventarioUsuario = async (req, res) => {
         // Remove campos que o banco de dados gerencia ou que não são colunas diretas
         delete dadosParaSalvar.id;
         delete dadosParaSalvar.usuario_id;
+        delete dadosParaSalvar.createdAt;
+        delete dadosParaSalvar.updatedAt;
         
         if (existingInventarioRows.length > 0) {
             // ATUALIZAÇÃO

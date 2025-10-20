@@ -4,14 +4,13 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
-import { AuthProvider } from './context/AuthContext'; // Importa o nosso novo Provider
+import { AuthProvider } from './context/AuthContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter basename="/lgpd">
-      {/* O AuthProvider envolve a aplicação inteira */}
+    <BrowserRouter>
       <AuthProvider>
         <App />
       </AuthProvider>

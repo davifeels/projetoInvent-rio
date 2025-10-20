@@ -7,6 +7,13 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { usuario, logout, loading } = useAuth();
 
+  // ===== DEBUG - REMOVER DEPOIS =====
+  console.log("===== DEBUG DASHBOARD =====");
+  console.log("Perfil ID:", usuario?.perfil_id);
+  console.log("Usuário completo:", usuario);
+  console.log("===========================");
+  // ==================================
+
   const PROFILE_MASTER_ID = 1;
   const PROFILE_GESTOR_ID = 2;
   const PROFILE_NORMAL_ID = 3;
@@ -17,12 +24,13 @@ export default function Dashboard() {
     { title: 'Auditoria do Sistema', icon: '📋', path: '/auditoria', allowed: [PROFILE_MASTER_ID, PROFILE_GESTOR_ID] },
     { title: 'Meu Inventário Pessoal', icon: '📝', path: '/meu-inventario', allowed: [PROFILE_MASTER_ID, PROFILE_GESTOR_ID, PROFILE_NORMAL_ID] },
     { title: 'Gerenciar Funções', icon: '🏷️', path: '/funcoes', allowed: [PROFILE_MASTER_ID] },
-    { title: 'Relatórios Master', icon: '📈', path: '/admin/inventarios', allowed: [PROFILE_MASTER_ID] },
+    { title: 'Relatórios de Inventários', icon: '📈', path: '/admin/inventarios', allowed: [PROFILE_MASTER_ID, PROFILE_GESTOR_ID] },
   ];
 
   if (loading) {
     return <div className="loading-container">A carregar...</div>;
   }
+  
   if (!usuario) {
     return <div className="loading-container">A redirecionar para o login...</div>;
   }

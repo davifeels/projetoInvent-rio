@@ -8,6 +8,14 @@ import './InventarioMasterView.css';
 export default function InventarioMasterView() {
     const { usuario, loadingAuth } = useAuth();
     const navigate = useNavigate();
+
+    // ===== DEBUG - REMOVER DEPOIS =====
+    console.log("===== DEBUG INVENTARIO MASTER =====");
+    console.log("Perfil ID:", usuario?.perfil_id);
+    console.log("Usuário completo:", usuario);
+    console.log("====================================");
+    // ==================================
+
     const [inventarios, setInventarios] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -16,6 +24,7 @@ export default function InventarioMasterView() {
     const API_MASTER_ENDPOINT = '/admin/inventarios';
     const API_EXPORT_ENDPOINT = '/admin/inventarios/exportar/excel';
     const PROFILE_MASTER_ID = 1;
+    const PROFILE_GESTOR_ID = 2;
 
     const carregarTodosInventarios = useCallback(async () => {
         setLoading(true);
@@ -35,15 +44,16 @@ export default function InventarioMasterView() {
     useEffect(() => {
         if (loadingAuth) return;
 
-        if (!usuario || usuario.perfil_id !== PROFILE_MASTER_ID) {
-            console.warn("Acesso negado: Usuário não autenticado ou não é Master. Redirecionando...");
+        // PERMITE MASTER E GESTOR
+        if (!usuario || (usuario.perfil_id !== PROFILE_MASTER_ID && usuario.perfil_id !== PROFILE_GESTOR_ID)) {
+            console.warn("Acesso negado: Usuário não autenticado ou não tem permissão. Redirecionando...");
             navigate('/dashboard');
             return;
         }
 
         carregarTodosInventarios();
 
-    }, [usuario, loadingAuth, navigate, carregarTodosInventarios, PROFILE_MASTER_ID]);
+    }, [usuario, loadingAuth, navigate, carregarTodosInventarios, PROFILE_MASTER_ID, PROFILE_GESTOR_ID]);
 
     const handleExportExcel = async () => {
         setExporting(true);
@@ -76,7 +86,7 @@ export default function InventarioMasterView() {
         return <div className="error-message-full-page">Erro: {error}</div>;
     }
 
-    if (!usuario || usuario.perfil_id !== PROFILE_MASTER_ID) {
+    if (!usuario || (usuario.perfil_id !== PROFILE_MASTER_ID && usuario.perfil_id !== PROFILE_GESTOR_ID)) {
         return <div className="access-denied-message">Acesso negado. Você não tem permissão para visualizar esta página.</div>;
     }
 

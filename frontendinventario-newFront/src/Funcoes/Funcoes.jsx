@@ -1,7 +1,7 @@
 // src/pages/Funcoes.jsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { fetchFuncoes, createFuncao, deleteFuncao, exportFuncoesExcel } from '../services/funcoesService';
-import BackButton from '../components/BackButton'; // ADICIONAR ESTA LINHA
+import { fetchFuncoes, createFuncao, deleteFuncao } from '../services/funcoesService';
+import BackButton from '../components/BackButton';
 import './funcoes.css';
 
 export default function Funcoes() {
@@ -10,7 +10,6 @@ export default function Funcoes() {
   const [erro, setErro] = useState('');
   const [sucesso, setSucesso] = useState('');
   const [loading, setLoading] = useState(true);
-  const [exporting, setExporting] = useState(false);
 
   const carregarFuncoes = useCallback(async () => {
     setLoading(true);
@@ -35,8 +34,8 @@ export default function Funcoes() {
     setSucesso('');
     try {
       await createFuncao({ nome });
+      setSucesso(`Função "${nome}" criada com sucesso!`);
       setNome('');
-      setSucesso('Função criada com sucesso!');
       setTimeout(() => {
           carregarFuncoes();
           setSucesso('');
@@ -64,36 +63,9 @@ export default function Funcoes() {
     }
   }
 
-  const handleExport = async () => {
-    setExporting(true);
-    setErro('');
-    try {
-      const response = await exportFuncoesExcel();
-      
-      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      const dataFormatada = new Date().toISOString().split('T')[0];
-      link.setAttribute('download', `Relatorio_Funcoes_${dataFormatada}.xlsx`);
-      
-      document.body.appendChild(link);
-      link.click();
-      
-      link.parentNode.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Erro ao exportar funções:', error);
-      const serverMessage = error.response?.data?.message || 'Falha ao gerar o relatório de funções.';
-      setErro(serverMessage);
-    } finally {
-      setExporting(false);
-    }
-  };
-
   return (
     <div className="page-container">
-      <BackButton /> {/* ADICIONAR ESTA LINHA */}
+      <BackButton />
       
       <div className="page-header">
         <h1>Gerenciamento de Funções</h1>
@@ -125,13 +97,6 @@ export default function Funcoes() {
               disabled={loading}
             >
               Adicionar Função
-            </button>
-            <button 
-              className="btn-export" 
-              onClick={handleExport} 
-              disabled={exporting || loading}
-            >
-              {exporting ? 'Exportando...' : 'Exportar Lista para Excel'}
             </button>
           </div>
 
