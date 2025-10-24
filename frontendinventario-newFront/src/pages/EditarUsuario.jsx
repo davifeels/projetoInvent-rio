@@ -4,13 +4,14 @@ import { fetchUsuarioPorId, updateUsuario } from '../services/usuariosService';
 import { fetchSetores } from '../services/setoresService';
 import { fetchFuncoes } from '../services/funcoesService';
 import { useAuth } from '../context/AuthContext';
+import logo from '../assets/logo.png';
 import BackButton from '../components/BackButton';
 import './EditarUsuario.css';
 
 export default function EditarUsuario() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { usuario: usuarioLogado } = useAuth();
+  const { usuario: usuarioLogado, logout } = useAuth();
 
   const [formData, setFormData] = useState({
     nome: '', email: '', perfil_id: '', setor_id: '', funcao_id: '', status: ''
@@ -48,15 +49,11 @@ export default function EditarUsuario() {
         { id: "3", nome: "Usuário" }
       ];
 
-      // CORREÇÃO: Master pode promover para Master, Coordenador ou Usuário
       if (usuarioLogado?.perfil_id === 1) { 
-        // Master vê TODAS as opções (incluindo Master)
         setPerfis(todosPerfis); 
       } else if (usuarioLogado?.perfil_id === 2) { 
-        // Coordenador só pode editar para Usuário
         setPerfis(todosPerfis.filter(p => p.id === "3")); 
       } else {
-        // Usuário comum não edita ninguém (não deveria chegar aqui)
         setPerfis([]);
       }
 
@@ -110,69 +107,107 @@ export default function EditarUsuario() {
     }
   };
 
-  if (loading) return <div className="editar-usuario-container"><BackButton /><p>Carregando...</p></div>;
+  const handleLogout = () => {
+    if (window.confirm('Tem certeza que deseja sair?')) {
+      logout();
+    }
+  };
+
+  if (loading && !feedback.erro && !feedback.sucesso) {
+    return <div className="loading-container">Carregando...</div>;
+  }
 
   return (
-    <div className="editar-usuario-container">
-      <BackButton />
-      
-      <h2>Editar Usuário</h2>
-      {feedback.erro && <p className="feedback-message error-message">{feedback.erro}</p>}
-      {feedback.sucesso && <p className="feedback-message success-message">{feedback.sucesso}</p>}
-      
-      <form onSubmit={handleSubmit} className="editar-usuario-form">
-        <div className="form-group">
-          <label htmlFor="nome">Nome</label>
-          <input id="nome" name="nome" type="text" value={formData.nome} onChange={handleChange} required />
+    <div className="editar-usuario-page">
+      {/* Header */}
+      <header className="editar-usuario-page-header">
+        <div className="header-left">
+          <img src={logo} alt="Logo" className="header-logo" />
+          <div className="header-text">
+            <h1 className="header-title">Inventário LGPD</h1>
+            <p className="header-subtitle">Gestão Inteligente e Segurança de Dados</p>
+          </div>
         </div>
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input id="email" name="email" type="email" value={formData.email} onChange={handleChange} required />
+        <div className="header-right">
+          <p className="user-greeting">Olá, {usuarioLogado?.nome || usuarioLogado?.email || 'usuário'}!</p>
+          <button onClick={handleLogout} className="logout-button">Sair</button>
         </div>
+      </header>
 
-        <div className="form-group">
-          <label htmlFor="novaSenha">Nova Senha (opcional)</label>
-          <input id="novaSenha" name="novaSenha" type="password" placeholder="Deixe em branco para não alterar" value={novaSenha} onChange={(e) => setNovaSenha(e.target.value)} />
-        </div>
+      {/* Conteúdo principal */}
+      <main className="editar-usuario-content">
+        <div className="editar-usuario-container">
+          <BackButton />
+          
+          <h2>Editar Usuário</h2>
+          
+          <form onSubmit={handleSubmit} className="editar-usuario-form">
+            {feedback.erro && <p className="feedback-message error-message">{feedback.erro}</p>}
+            {feedback.sucesso && <p className="feedback-message success-message">{feedback.sucesso}</p>}
+            
+            <div className="form-group">
+              <label htmlFor="nome">Nome</label>
+              <input id="nome" name="nome" type="text" value={formData.nome} onChange={handleChange} required />
+            </div>
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input id="email" name="email" type="email" value={formData.email} onChange={handleChange} required />
+            </div>
 
-        <div className="form-group">
-          <label htmlFor="perfil_id">Perfil</label>
-          <select id="perfil_id" name="perfil_id" value={formData.perfil_id} onChange={handleChange} required>
-            <option value="">Selecione um Perfil</option>
-            {perfis.map(p => <option key={p.id} value={p.id}>{p.nome}</option>)}
-          </select>
-        </div>
-        <div className="form-group">
-          <label htmlFor="setor_id">Setor</label>
-          <select id="setor_id" name="setor_id" value={formData.setor_id} onChange={handleChange} required>
-            <option value="">Selecione um Setor</option>
-            {setores.map(s => <option key={s.id} value={s.id}>{s.nome}</option>)}
-          </select>
-        </div>
-        <div className="form-group">
-          <label htmlFor="funcao_id">Função</label>
-          <select id="funcao_id" name="funcao_id" value={formData.funcao_id} onChange={handleChange} required>
-            <option value="">Selecione uma Função</option>
-            {funcoes.map(f => <option key={f.id} value={f.id}>{f.nome}</option>)}
-          </select>
-        </div>
-        <div className="form-group">
-          <label htmlFor="status">Status</label>
-          <select id="status" name="status" value={formData.status} onChange={handleChange} required>
-            <option value="ativo">Ativo</option>
-            <option value="pendente">Pendente</option>
-            <option value="rejeitado">Rejeitado</option>
-            <option value="ativo_inventario_pendente">Ativo (Inventário Pendente)</option>
-          </select>
-        </div>
+            <div className="form-group full-width">
+              <label htmlFor="novaSenha">Nova Senha (opcional)</label>
+              <input id="novaSenha" name="novaSenha" type="password" placeholder="Deixe em branco para não alterar" value={novaSenha} onChange={(e) => setNovaSenha(e.target.value)} />
+            </div>
 
-        <div className="form-actions">
-          <button type="button" className="btn-cancelar" onClick={() => navigate('/usuarios')}>Cancelar</button>
-          <button type="submit" className="btn-atualizar" disabled={loading}>
-            {loading ? 'Salvando...' : 'Salvar Alterações'}
-          </button>
+            <div className="form-group">
+              <label htmlFor="perfil_id">Perfil</label>
+              <select id="perfil_id" name="perfil_id" value={formData.perfil_id} onChange={handleChange} required>
+                <option value="">Selecione um Perfil</option>
+                {perfis.map(p => <option key={p.id} value={p.id}>{p.nome}</option>)}
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="setor_id">Setor</label>
+              <select id="setor_id" name="setor_id" value={formData.setor_id} onChange={handleChange} required>
+                <option value="">Selecione um Setor</option>
+                {setores.map(s => <option key={s.id} value={s.id}>{s.nome}</option>)}
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="funcao_id">Função</label>
+              <select id="funcao_id" name="funcao_id" value={formData.funcao_id} onChange={handleChange} required>
+                <option value="">Selecione uma Função</option>
+                {funcoes.map(f => <option key={f.id} value={f.id}>{f.nome}</option>)}
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="status">Status</label>
+              <select id="status" name="status" value={formData.status} onChange={handleChange} required>
+                <option value="ativo">Ativo</option>
+                <option value="pendente">Pendente</option>
+                <option value="rejeitado">Rejeitado</option>
+                <option value="ativo_inventario_pendente">Ativo (Inventário Pendente)</option>
+              </select>
+            </div>
+
+            <div className="form-actions">
+              <button type="button" className="btn-cancelar" onClick={() => navigate('/usuarios')}>Cancelar</button>
+              <button type="submit" className="btn-atualizar" disabled={loading}>
+                {loading ? 'Salvando...' : 'Salvar Alterações'}
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+      </main>
+
+      {/* Footer */}
+      <footer className="editar-usuario-page-footer">
+        <img 
+          src={logo}
+          alt="Logo Footer" 
+          className="footer-logo"
+        />
+      </footer>
     </div>
   );
 }

@@ -2,19 +2,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import logo from '../assets/logo.png';
 import BackButton from '../components/BackButton';
 import './InventarioMasterView.css';
 
 export default function InventarioMasterView() {
-    const { usuario, loadingAuth } = useAuth();
+    const { usuario, logout, loadingAuth } = useAuth();
     const navigate = useNavigate();
-
-    // ===== DEBUG - REMOVER DEPOIS =====
-    console.log("===== DEBUG INVENTARIO MASTER =====");
-    console.log("Perfil ID:", usuario?.perfil_id);
-    console.log("Usuário completo:", usuario);
-    console.log("====================================");
-    // ==================================
 
     const [inventarios, setInventarios] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -44,7 +38,6 @@ export default function InventarioMasterView() {
     useEffect(() => {
         if (loadingAuth) return;
 
-        // PERMITE MASTER E GESTOR
         if (!usuario || (usuario.perfil_id !== PROFILE_MASTER_ID && usuario.perfil_id !== PROFILE_GESTOR_ID)) {
             console.warn("Acesso negado: Usuário não autenticado ou não tem permissão. Redirecionando...");
             navigate('/dashboard');
@@ -82,23 +75,31 @@ export default function InventarioMasterView() {
         return <div className="loading-container">Carregando relatórios...</div>;
     }
 
-    if (error) {
-        return <div className="error-message-full-page">Erro: {error}</div>;
-    }
-
     if (!usuario || (usuario.perfil_id !== PROFILE_MASTER_ID && usuario.perfil_id !== PROFILE_GESTOR_ID)) {
         return <div className="access-denied-message">Acesso negado. Você não tem permissão para visualizar esta página.</div>;
     }
 
     return (
-        <div className="inventario-master-container">
-            <BackButton />
-            
-            <header className="inventario-master-header">
-                <h2>Relatórios de Inventário de Dados Pessoais</h2>
-                <p>Visualização e gestão de todos os inventários cadastrados no sistema.</p>
+        <div className="inventario-master-page">
+            <header className="inventario-master-page-header">
+                <div className="header-left">
+                    <img src={logo} alt="Logo" className="header-logo" />
+                    <div className="header-text">
+                        <h1 className="header-title">Inventário LGPD</h1>
+                        <p className="header-subtitle">Gestão Inteligente e Segurança de Dados</p>
+                    </div>
+                </div>
+                <div className="header-right">
+                    <p className="user-greeting">Olá, {usuario?.nome || usuario?.email || 'usuário'}!</p>
+                    <button onClick={logout} className="logout-button">Sair</button>
+                </div>
+            </header>
 
-                <div className="inventario-export-button-wrapper">
+            <main className="inventario-master-content">
+                <BackButton />
+                
+                <header className="inventario-master-header">
+                    <h2>Relatórios de Inventário de Dados Pessoais</h2>
                     <button 
                         className="btn-export-excel" 
                         onClick={handleExportExcel} 
@@ -107,28 +108,36 @@ export default function InventarioMasterView() {
                     >
                         {exporting ? 'Exportando...' : 'Exportar Excel'}
                     </button>
-                </div>
-            </header>
+                </header>
 
-            {inventarios.length === 0 && !error ? (
-                <div className="no-inventarios">
-                    <p>Nenhum inventário encontrado no sistema.</p>
-                </div>
-            ) : error ? (
-                <div className="error-message-full-page">Erro: {error}</div>
-            ) : (
-                <div className="inventarios-list">
-                    {inventarios.map((inv) => (
-                        <div key={inv.id} className="inventario-card">
-                            <h3>{inv.nome_servico || 'Serviço Não Nomeado'}</h3>
-                            <p><strong>Sigla:</strong> {inv.sigla_servico || 'N/A'}</p>
-                            <p><strong>Diretoria:</strong> {inv.diretoria || 'N/A'}</p>
-                            <p><strong>Setor:</strong> {inv.setor_responsavel || 'N/A'}</p>
-                            <p><strong>Finalidade:</strong> {inv.finalidade || 'N/A'}</p>
-                        </div>
-                    ))}
-                </div>
-            )}
+                {inventarios.length === 0 && !error ? (
+                    <div className="no-inventarios">
+                        <p>Nenhum inventário encontrado no sistema.</p>
+                    </div>
+                ) : error ? (
+                    <div className="error-message-full-page">Erro: {error}</div>
+                ) : (
+                    <div className="inventarios-list">
+                        {inventarios.map((inv) => (
+                            <div key={inv.id} className="inventario-card">
+                                <h3>{inv.nome_servico || 'Serviço Não Nomeado'}</h3>
+                                <p><strong>Sigla</strong> {inv.sigla_servico || 'N/A'}</p>
+                                <p><strong>Diretoria</strong> {inv.diretoria || 'N/A'}</p>
+                                <p><strong>Setor</strong> {inv.setor_responsavel || 'N/A'}</p>
+                                <p><strong>Finalidade</strong> {inv.finalidade || 'N/A'}</p>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </main>
+
+            <footer className="inventario-master-page-footer">
+                <img 
+                    src={logo}
+                    alt="Logo Footer" 
+                    className="footer-logo"
+                />
+            </footer>
         </div>
     );
 }

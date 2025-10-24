@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { exportAuditoriaExcel } from '../services/auditoriaService';
+import { useAuth } from '../context/AuthContext';
+import logo from '../assets/logo.png';
 import BackButton from '../components/BackButton';
 import './auditoria.css';
 
@@ -39,6 +40,7 @@ function DetalhesFormatados({ detalhesJson }) {
 }
 
 export default function Auditoria() {
+  const { usuario, logout } = useAuth();
   const [auditorias, setAuditorias] = useState([]);
   const [erro, setErro] = useState('');
   const [loading, setLoading] = useState(true);
@@ -98,80 +100,107 @@ export default function Auditoria() {
   };
 
   return (
-    <div className="auditoria-container">
-      <BackButton />
-      
-      <div className="auditoria-header">
-        <h2>Log de Auditoria do Sistema</h2>
-      </div>
-
-      <div className="export-panel">
-        <h3>Exportar Relatório</h3>
-        <form onSubmit={handleExport} className="export-form">
-          <div className="form-group">
-            <label htmlFor="dataInicio">Data de Início</label>
-            <input 
-              type="date" 
-              id="dataInicio"
-              value={dataInicio}
-              onChange={(e) => setDataInicio(e.target.value)}
-              required
-            />
+    <div className="auditoria-page">
+      {/* Header */}
+      <header className="auditoria-page-header">
+        <div className="header-left">
+          <img src={logo} alt="Logo" className="header-logo" />
+          <div className="header-text">
+            <h1 className="header-title">Inventário LGPD</h1>
+            <p className="header-subtitle">Gestão Inteligente e Segurança de Dados</p>
           </div>
-          <div className="form-group">
-            <label htmlFor="dataFim">Data de Fim</label>
-            <input 
-              type="date" 
-              id="dataFim"
-              value={dataFim}
-              onChange={(e) => setDataFim(e.target.value)}
-              required
-            />
-          </div>
-          <button type="submit" className="btn-export" disabled={exporting}>
-            {exporting ? 'Exportando...' : 'Exportar para Excel'}
-          </button>
-        </form>
-        {exportError && <p className="status-message error export-error">{exportError}</p>}
-      </div>
-
-      {loading && <p className="status-message">Carregando auditoria...</p>}
-      {erro && !loading && <p className="status-message error">{erro}</p>}
-
-      {!loading && !erro && (
-        <div className="table-responsive-auditoria">
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Ação</th>
-                <th>Usuário</th>
-                <th>Setor</th>
-                <th>Data/Hora</th>
-                <th>Detalhes da Ação</th>
-              </tr>
-            </thead>
-            <tbody>
-              {auditorias.length > 0 ? (
-                auditorias.map((log) => (
-                  <tr key={log.id}>
-                    <td>{log.id}</td>
-                    <td>{log.acao}</td>
-                    <td>{log.usuario_nome || 'Sistema'}</td>
-                    <td>{log.setor_sigla || 'N/A'}</td>
-                    <td>{log.data_acao_formatada}</td>
-                    <td><DetalhesFormatados detalhesJson={log.detalhes} /></td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="6" style={{ textAlign: 'center' }}>Nenhum registro de auditoria encontrado.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
         </div>
-      )}
+        <div className="header-right">
+          <p className="user-greeting">Olá, {usuario?.nome || usuario?.email || 'usuário'}!</p>
+          <button onClick={logout} className="logout-button">Sair</button>
+        </div>
+      </header>
+
+      {/* Conteúdo com scroll */}
+      <main className="auditoria-content">
+        <BackButton />
+        
+        <div className="auditoria-header">
+          <h2>Log de Auditoria do Sistema</h2>
+        </div>
+
+        <div className="export-panel">
+          <h3>Exportar Relatório</h3>
+          <form onSubmit={handleExport} className="export-form">
+            <div className="form-group">
+              <label htmlFor="dataInicio">Data de Início</label>
+              <input 
+                type="date" 
+                id="dataInicio"
+                value={dataInicio}
+                onChange={(e) => setDataInicio(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="dataFim">Data de Fim</label>
+              <input 
+                type="date" 
+                id="dataFim"
+                value={dataFim}
+                onChange={(e) => setDataFim(e.target.value)}
+                required
+              />
+            </div>
+            <button type="submit" className="btn-export" disabled={exporting}>
+              {exporting ? 'Exportando...' : 'Exportar para Excel'}
+            </button>
+          </form>
+          {exportError && <p className="status-message error export-error">{exportError}</p>}
+        </div>
+
+        {loading && <p className="status-message">Carregando auditoria...</p>}
+        {erro && !loading && <p className="status-message error">{erro}</p>}
+
+        {!loading && !erro && (
+          <div className="table-responsive-auditoria">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Ação</th>
+                  <th>Usuário</th>
+                  <th>Setor</th>
+                  <th>Data/Hora</th>
+                  <th>Detalhes da Ação</th>
+                </tr>
+              </thead>
+              <tbody>
+                {auditorias.length > 0 ? (
+                  auditorias.map((log) => (
+                    <tr key={log.id}>
+                      <td>{log.id}</td>
+                      <td>{log.acao}</td>
+                      <td>{log.usuario_nome || 'Sistema'}</td>
+                      <td>{log.setor_sigla || 'N/A'}</td>
+                      <td>{log.data_acao_formatada}</td>
+                      <td><DetalhesFormatados detalhesJson={log.detalhes} /></td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" style={{ textAlign: 'center' }}>Nenhum registro de auditoria encontrado.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </main>
+
+      {/* Footer */}
+      <footer className="auditoria-page-footer">
+        <img 
+          src={logo}
+          alt="Logo Footer" 
+          className="footer-logo"
+        />
+      </footer>
     </div>
   );
 }

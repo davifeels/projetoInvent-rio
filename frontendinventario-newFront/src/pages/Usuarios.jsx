@@ -8,12 +8,13 @@ import {
   rejeitarUsuario 
 } from '../services/usuariosService';
 import { useAuth } from '../context/AuthContext';
+import logo from '../assets/logo.png';
 import BackButton from '../components/BackButton';
 import './usuarios.css';
 
 export default function Usuarios() {
   const navigate = useNavigate();
-  const { usuario: usuarioLogado } = useAuth();
+  const { usuario: usuarioLogado, logout } = useAuth();
 
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,15 +28,12 @@ export default function Usuarios() {
       const res = await fetchUsuarios();
       let listaUsuarios = res.data;
 
-      // FILTROS DE VISUALIZAÇÃO
       if (usuarioLogado?.perfil_id === 2) {
-        // Coordenador só vê usuários do próprio setor (exceto Masters)
         listaUsuarios = listaUsuarios.filter(u => 
-          u.perfil_id !== 1 && // Não vê Masters
-          u.sigla_setor === usuarioLogado.sigla_setor // Só do próprio setor
+          u.perfil_id !== 1 && 
+          u.sigla_setor === usuarioLogado.sigla_setor
         );
       }
-      // Master vê todos (nenhum filtro aplicado)
 
       setUsuarios(listaUsuarios);
     } catch (err) {
@@ -126,100 +124,130 @@ export default function Usuarios() {
     }
   };
 
-  // Verifica se pode mostrar botão de exclusão
   const podeExcluir = (user) => {
-    // Master pode excluir qualquer um (exceto outros Masters)
     if (usuarioLogado?.perfil_id === 1) {
-      return user.perfil_id !== 1; // Master não exclui outro Master
+      return user.perfil_id !== 1;
     }
-    // Coordenador pode excluir usuários comuns do seu setor
     if (usuarioLogado?.perfil_id === 2) {
       return user.perfil_id === 3 && user.sigla_setor === usuarioLogado.sigla_setor;
     }
     return false;
   };
 
+  const handleLogout = () => {
+    if (window.confirm('Tem certeza que deseja sair?')) {
+      logout();
+    }
+  };
+
   return (
-    <div className="usuarios-container">
-      <BackButton />
-      
-      <div className="usuarios-header">
-        <h2>Gerenciamento de Usuários</h2>
-        <div className="header-buttons">
-          {(usuarioLogado?.perfil_id === 1 || usuarioLogado?.perfil_id === 2) && (
-            <>
-              <button className="btn-create" onClick={() => navigate('/usuarios/novo')}>
-                Cadastrar Novo Usuário
-              </button>
-              <button className="btn-export" onClick={handleExport} disabled={exporting || loading}>
-                {exporting ? 'Exportando...' : 'Exportar para Excel'}
-              </button>
-            </>
-          )}
+    <div className="usuarios-page">
+      {/* Header */}
+      <header className="usuarios-page-header">
+        <div className="header-left">
+          <img src={logo} alt="Logo" className="header-logo" />
+          <div className="header-text">
+            <h1 className="header-title">Inventário LGPD</h1>
+            <p className="header-subtitle">Gestão Inteligente e Segurança de Dados</p>
+          </div>
         </div>
-      </div>
+        <div className="header-right">
+          <p className="user-greeting">Olá, {usuarioLogado?.nome || usuarioLogado?.email || 'usuário'}!</p>
+          <button onClick={handleLogout} className="logout-button">Sair</button>
+        </div>
+      </header>
 
-      {sucesso && <p className="message success">{sucesso}</p>}
-      {erro && <p className="message error">{erro}</p>}
+      {/* Conteúdo principal */}
+      <main className="usuarios-content">
+        <BackButton />
+        
+        <div className="usuarios-header">
+          <h2>Gerenciamento de Usuários</h2>
+          <div className="header-buttons">
+            {(usuarioLogado?.perfil_id === 1 || usuarioLogado?.perfil_id === 2) && (
+              <>
+                <button className="btn-create" onClick={() => navigate('/usuarios/novo')}>
+                  Cadastrar Novo Usuário
+                </button>
+                <button className="btn-export" onClick={handleExport} disabled={exporting || loading}>
+                  {exporting ? 'Exportando...' : 'Exportar para Excel'}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
 
-      {loading ? (
-        <p>Carregando usuários...</p>
-      ) : (
-        <div className="table-responsive">
-          <table className="usuarios-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Perfil</th>
-                <th>Setor</th>
-                <th>Status</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {usuarios.length > 0 ? (
-                usuarios.map((user) => (
-                  <tr key={user.id}>
-                    <td>{user.id}</td>
-                    <td>{user.nome}</td>
-                    <td>{user.email}</td>
-                    <td>{getNomePerfil(user.perfil_id)}</td>
-                    <td>{user.sigla_setor || 'N/A'}</td>
-                    <td>
-                      <span className={`status status-${user.status?.toLowerCase()}`}>
-                        {user.status}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="action-buttons">
-                        {user.status === 'pendente' ? (
-                          <>
-                            <button className="btn-approve" onClick={() => handleAprovar(user.id)}>Aprovar</button>
-                            <button className="btn-reject" onClick={() => handleRecusar(user.id)}>Recusar</button>
-                          </>
-                        ) : (
-                          <>
-                            <button className="btn-edit" onClick={() => handleEdit(user.id)}>Editar</button>
-                            {podeExcluir(user) && (
-                              <button className="btn-delete" onClick={() => handleDelete(user.id)}>Excluir</button>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
+        {sucesso && <p className="message success">{sucesso}</p>}
+        {erro && <p className="message error">{erro}</p>}
+
+        {loading ? (
+          <p>Carregando usuários...</p>
+        ) : (
+          <div className="table-responsive">
+            <table className="usuarios-table">
+              <thead>
                 <tr>
-                  <td colSpan="7">Nenhum usuário encontrado.</td>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>Email</th>
+                  <th>Perfil</th>
+                  <th>Setor</th>
+                  <th>Status</th>
+                  <th>Ações</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
+              </thead>
+              <tbody>
+                {usuarios.length > 0 ? (
+                  usuarios.map((user) => (
+                    <tr key={user.id}>
+                      <td>{user.id}</td>
+                      <td>{user.nome}</td>
+                      <td>{user.email}</td>
+                      <td>{getNomePerfil(user.perfil_id)}</td>
+                      <td>{user.sigla_setor || 'N/A'}</td>
+                      <td>
+                        <span className={`status status-${user.status?.toLowerCase()}`}>
+                          {user.status}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="action-buttons">
+                          {user.status === 'pendente' ? (
+                            <>
+                              <button className="btn-approve" onClick={() => handleAprovar(user.id)}>Aprovar</button>
+                              <button className="btn-reject" onClick={() => handleRecusar(user.id)}>Recusar</button>
+                            </>
+                          ) : (
+                            <>
+                              <button className="btn-edit" onClick={() => handleEdit(user.id)}>Editar</button>
+                              {podeExcluir(user) && (
+                                <button className="btn-delete" onClick={() => handleDelete(user.id)}>Excluir</button>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7">Nenhum usuário encontrado.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </main>
+
+      {/* Footer */}
+      <footer className="usuarios-page-footer">
+        <img 
+          src={logo}
+          alt="Logo Footer" 
+          className="footer-logo"
+        />
+      </footer>
     </div>
   );
 }

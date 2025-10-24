@@ -1,0 +1,47 @@
+services:
+  backend:
+    container_name: backend_colaboradores
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=davi080401
+      - DB_NAME=cadastro_colaboradores
+      - JWT_SECRET=H9u7V@r#Lp0x!e2KdZsM
+      - JWT_REFRESH_SECRET=A8!rGv5%Lm3#Tt2QcXzP
+      - PORT=3000
+      - NODE_ENV=production
+      - CORS_ORIGIN=http://localhost:3000,http://localhost:3001
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0
+    container_name: db_colaboradores
+    restart: always
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=davi080401
+      - MYSQL_DATABASE=cadastro_colaboradores
+      - MYSQL_PASSWORD=davi080401
+      - MYSQL_CHARACTER_SET_SERVER=utf8mb4
+      - MYSQL_COLLATION_SERVER=utf8mb4_unicode_ci
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pdavi080401"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  mysql_data:
